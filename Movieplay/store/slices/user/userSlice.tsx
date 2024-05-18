@@ -1,7 +1,6 @@
-// slices/userSlice.ts
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {DataLoadStatus, IUser} from '../../types';
 import {RootState} from '../../store';
+import {DataLoadStatus, IUser} from '../../types';
 
 interface UserState {
   user: IUser | null;
