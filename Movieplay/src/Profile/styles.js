@@ -19,15 +19,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#888',
     marginBottom: 20,
   },
-  updateButton: {
-    width: '80%',
-    padding: 15,
-    marginVertical: 10,
-    backgroundColor: '#1E90FF',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  logoutButton: {
+  blueButton: {
     width: '80%',
     padding: 15,
     marginVertical: 10,
@@ -35,7 +27,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
   },
-  deleteButton: {
+  redButton: {
     width: '80%',
     padding: 15,
     marginVertical: 10,

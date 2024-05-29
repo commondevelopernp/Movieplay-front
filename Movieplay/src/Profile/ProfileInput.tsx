@@ -1,7 +1,15 @@
 import React from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 
-const ProfileInput = ({
+interface ProfileInputProps {
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  secureTextEntry?: boolean;
+}
+
+const ProfileInput: React.FC<ProfileInputProps> = ({
   label,
   value,
   onChangeText,
@@ -16,7 +24,7 @@ const ProfileInput = ({
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#aaa" // Adjust placeholder color
+        placeholderTextColor="#aaa"
         secureTextEntry={secureTextEntry}
       />
     </View>
@@ -35,11 +43,11 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 10,
-    backgroundColor: '#444', // Adjust input background color
+    backgroundColor: '#fff', // Change background to white
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#666', // Adjust border color
-    color: '#fff',
+    borderColor: '#666',
+    color: '#000', // Change text color to black for readability
   },
 });
 
