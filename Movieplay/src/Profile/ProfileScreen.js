@@ -1,13 +1,7 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Modal,
-  Image,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Modal, Image} from 'react-native';
 import {styles} from './styles'; // Ensure the correct path to the styles file
+import ProfileInput from './ProfileInput'; // Adjust the import path accordingly
 
 const ProfileScreen = () => {
   const [nickname, setNickname] = useState('');
@@ -38,33 +32,29 @@ const ProfileScreen = () => {
           source={require('../assets/Profile-Placeholder.png')}
         />
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Nickname"
+      <ProfileInput
+        label="Nickname"
         value={nickname}
         onChangeText={setNickname}
-        placeholderTextColor="#888"
+        placeholder="Nickname"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre"
+      <ProfileInput
+        label="Nombre"
         value={firstName}
         onChangeText={setFirstName}
-        placeholderTextColor="#888"
+        placeholder="Nombre"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Apellido"
+      <ProfileInput
+        label="Apellido"
         value={lastName}
         onChangeText={setLastName}
-        placeholderTextColor="#888"
+        placeholder="Apellido"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
+      <ProfileInput
+        label="Email"
         value={email}
         onChangeText={setEmail}
-        placeholderTextColor="#888"
+        placeholder="Email"
       />
       <TouchableOpacity
         style={styles.updateButton}
