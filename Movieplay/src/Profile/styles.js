@@ -4,24 +4,30 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
     backgroundColor: '#000',
   },
   profilePictureContainer: {
     marginBottom: 20,
+    alignItems: 'center',
   },
   profilePicture: {
     width: 100,
     height: 100,
     borderRadius: 50,
     backgroundColor: '#888',
+    marginBottom: 20,
   },
   input: {
     width: '80%',
     padding: 10,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#222', // Darker background for the input fields
     borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#444', // Darker border color for better contrast
+    color: '#fff', // Ensure text color is white
   },
   updateButton: {
     width: '80%',
