@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, Modal, Image} from 'react-native';
-import {styles} from './styles'; // Ensure the correct path to the styles file
+import {styles} from './styles'; // Adjust the import path accordingly
 import ProfileInput from './ProfileInput'; // Adjust the import path accordingly
 
 const ProfileScreen = () => {
@@ -13,14 +13,17 @@ const ProfileScreen = () => {
 
   const handleUpdateProfile = () => {
     setSuccessModalVisible(true);
+    console.log('Profile updated');
   };
 
   const handleDeleteAccount = () => {
     setDeleteModalVisible(true);
+    console.log('Delete account triggered');
   };
 
   const confirmDeleteAccount = () => {
     setDeleteModalVisible(false);
+    console.log('Account deleted');
     // Handle account deletion logic here
   };
 
@@ -56,17 +59,13 @@ const ProfileScreen = () => {
         onChangeText={setEmail}
         placeholder="Email"
       />
-      <TouchableOpacity
-        style={styles.updateButton}
-        onPress={handleUpdateProfile}>
+      <TouchableOpacity style={styles.blueButton} onPress={handleUpdateProfile}>
         <Text style={styles.buttonText}>ACTUALIZAR PERFIL</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.blueButton}>
         <Text style={styles.buttonText}>CERRAR SESION</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={handleDeleteAccount}>
+      <TouchableOpacity style={styles.redButton} onPress={handleDeleteAccount}>
         <Text style={styles.buttonText}>ELIMINAR CUENTA</Text>
       </TouchableOpacity>
 
