@@ -19,16 +19,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#888',
     marginBottom: 20,
   },
-  input: {
-    width: '80%',
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#222', // Darker background for the input fields
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#444', // Darker border color for better contrast
-    color: '#fff', // Ensure text color is white
-  },
   updateButton: {
     width: '80%',
     padding: 15,
