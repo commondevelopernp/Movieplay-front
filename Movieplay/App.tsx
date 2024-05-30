@@ -22,15 +22,3 @@ export default function App() {
     </Provider>
   );
 }
-
-function App(): React.JSX.Element {
-  return (
-    <Provider store={store}>
-      <PaperProvider>
-        <Button>Press Here!</Button>
-      </PaperProvider>
-    </Provider>
-  );
-}
-
-export default App;
