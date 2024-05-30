@@ -1,17 +1,24 @@
 import React from 'react';
-import './assets/localization/i18n';
-import {Provider} from 'react-redux';
-import store from './store/store';
-import {Button, PaperProvider} from 'react-native-paper';
+import './assets/localization/i18n'; //Do not remove.
 
-function App(): React.JSX.Element {
+import {Provider} from 'react-redux';
+import store from './src/store/store';
+import {PaperProvider} from 'react-native-paper';
+import RootStackNavigation from './src/navigation/RootNavigation';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {enableScreens} from 'react-native-screens';
+
+enableScreens();
+
+export default function App() {
   return (
     <Provider store={store}>
       <PaperProvider>
-        <Button>Press Here!</Button>
+        <NavigationContainer>
+          <RootStackNavigation />
+        </NavigationContainer>
       </PaperProvider>
     </Provider>
   );
 }
-
-export default App;
