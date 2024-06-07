@@ -23,10 +23,13 @@
   "anyRate": "--",
   "ASC": "Ascendente",
   "DESC": "Descendente",
+  "genre": "Género",
   "genre_action": "Acción",
   "genre_comedy": "Comedia",
   "genre_horror": "Terror",
   "genre_romance": "Romántico",
   "genre_sci_fi": "Ciencia Ficción",
-  "genre_documentary": "Documental"
+  "genre_documentary": "Documental",
+  "synopsis": "Sinopsis",
+  "technicalInformation": "Información Técnica"
 }

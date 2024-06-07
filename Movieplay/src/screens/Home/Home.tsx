@@ -2,17 +2,26 @@ import React from 'react';
 import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
 import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import {StackScreenProps} from '@react-navigation/stack';
-import {FlatList, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
 import {genreElements} from '../../store/constants';
 import GenreFilterButton from '../../components/GenreButton/GenreButton';
 import movies from '../../components/MovieCard/MoviesMockData';
 import MovieCard from '../../components/MovieCard/MovieCard';
+import {IMovie} from '../../store/types';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Home = ({navigation}: Props) => {
+  const handleMoviePress = (movie: IMovie) => {
+    navigation.navigate('Movie', {movie});
+  };
   return (
     <BackgroundImageWrapper>
       <View style={styles.container}>
@@ -35,11 +44,13 @@ const Home = ({navigation}: Props) => {
               })}
             </ScrollView>
           </View>
-
           <FlatList
             data={movies}
-            renderItem={({item}) => <MovieCard movie={item} />}
-            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <TouchableOpacity onPress={() => handleMoviePress(item)}>
+                <MovieCard movie={item} />
+              </TouchableOpacity>
+            )}
           />
         </View>
       </View>

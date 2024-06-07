@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../screens/auth/Splash/login';
-import tabNavigator from './TabNavigator';
+import tabNavigator from './tabNavigator';
 
 export type RootStackNavigationParams = {
   Login: undefined;
@@ -16,7 +16,7 @@ const RootStackNavigation = () => {
     <Stack.Navigator>
       <Stack.Screen
         name="Login"
-        component={MovieCard}
+        component={Login}
         options={{headerShown: false}}
       />
       <Stack.Screen

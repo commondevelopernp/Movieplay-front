@@ -6,6 +6,7 @@ interface MoviePosterProps {
   alt: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MoviePoster: React.FC<MoviePosterProps> = ({src, alt}) => {
   return (
     <Image
