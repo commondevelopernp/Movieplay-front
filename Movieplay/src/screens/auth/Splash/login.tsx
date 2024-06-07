@@ -9,25 +9,30 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {RootStackNavigationParams} from '../../navigation/RootNavigation';
+import {RootStackNavigationParams} from '../../../navigation/RootNavigation';
 import {useTranslation} from 'react-i18next';
 
 type Props = StackScreenProps<RootStackNavigationParams, 'Login'>;
 
 const Login = ({navigation}: Props) => {
   const {t} = useTranslation();
+
+  const handlePress = () => {
+    navigation.navigate('TabNavigator');
+  };
+
   return (
     <ImageBackground
       style={styles.imageBackground}
-      source={require('../../assets/Slash-background.png')}
+      source={require('../../../assets/Slash-background.png')}
       resizeMode="cover">
       <View style={styles.overlay}>
         <Text style={styles.text}>{t('appName')}</Text>
         <Text style={styles.bienvenido}>{t('welcome')}</Text>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handlePress}>
           <Image
-            source={require('../../assets/Login-Google.png')}
+            source={require('../../../assets/Login-Google.png')}
             style={styles.buttonImage}
             resizeMode="contain"
           />

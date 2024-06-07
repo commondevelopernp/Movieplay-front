@@ -1,11 +1,11 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 
 interface SynopsisProps {
   text: string;
 }
 
-const Synopsis: React.FC<SynopsisProps> = ({ text }) => {
+const Synopsis: React.FC<SynopsisProps> = ({text}) => {
   return <Text style={styles.synopsis}>{text}</Text>;
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {View, Text, StyleSheet} from 'react-native';
 
 interface TechnicalInfoProps {
@@ -12,11 +13,14 @@ const TechnicalInfo: React.FC<TechnicalInfoProps> = ({
   duration,
   ratings,
 }) => {
+  const {t} = useTranslation();
   return (
     <View style={styles.technicalInfo}>
-      <Text style={styles.text}>Año: {year}</Text>
-      <Text style={styles.text}>Duración: {duration} min.</Text>
-      <Text style={styles.text}>Calificaciones: {ratings}</Text>
+      <Text style={styles.text}>{`${t('year')}: ${year}`}</Text>
+      <Text style={styles.text}>{`${t('duration')}: ${duration} ${t(
+        'minutes',
+      )}`}</Text>
+      <Text style={styles.text}>{`${t('rates')}: ${ratings}`}</Text>
     </View>
   );
 };
