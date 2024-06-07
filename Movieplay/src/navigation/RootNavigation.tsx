@@ -1,11 +1,11 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Login from '../auth/Splash/login';
-import MovieCard from '../Movie/Components/MovieCard';
+import Login from '../screens/auth/Splash/login';
+import tabNavigator from './TabNavigator';
 
 export type RootStackNavigationParams = {
   Login: undefined;
-  //TabNavigator: undefined;
+  TabNavigator: undefined;
   //Include here other screens
 };
 
@@ -19,11 +19,11 @@ const RootStackNavigation = () => {
         component={MovieCard}
         options={{headerShown: false}}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="TabNavigator"
         component={tabNavigator}
         options={{headerShown: false}}
-      /> */}
+      />
     </Stack.Navigator>
   );
 };
