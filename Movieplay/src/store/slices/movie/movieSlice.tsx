@@ -2,6 +2,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../../store';
 import {DataLoadStatus, IMovie} from '../../types';
+import MoviesMockData from '../../../components/MovieCard/MoviesMockData';
 
 interface MovieState {
   movies: IMovie[];
@@ -11,7 +12,7 @@ interface MovieState {
 }
 
 const initialState: MovieState = {
-  movies: [],
+  movies: MoviesMockData,
   total: 0,
   status: DataLoadStatus.NOT_REQUESTED_YET,
   error: null,

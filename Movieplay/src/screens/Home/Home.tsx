@@ -12,9 +12,10 @@ import {
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
 import {genreElements} from '../../store/constants';
 import GenreFilterButton from '../../components/GenreButton/GenreButton';
-import movies from '../../components/MovieCard/MoviesMockData';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import {IMovie} from '../../store/types';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../store/store';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 
@@ -22,6 +23,10 @@ const Home = ({navigation}: Props) => {
   const handleMoviePress = (movie: IMovie) => {
     navigation.navigate('Movie', {movie});
   };
+
+  //const {data, error, isLoading} = useGetMoviesQuery({}); //Prepare queries to be used.
+  const moviesFromState = useSelector((state: RootState) => state.movie.movies);
+
   return (
     <BackgroundImageWrapper>
       <View style={styles.container}>
@@ -45,7 +50,7 @@ const Home = ({navigation}: Props) => {
             </ScrollView>
           </View>
           <FlatList
-            data={movies}
+            data={moviesFromState}
             renderItem={({item}) => (
               <TouchableOpacity onPress={() => handleMoviePress(item)}>
                 <MovieCard movie={item} />

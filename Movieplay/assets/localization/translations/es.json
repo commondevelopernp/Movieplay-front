@@ -31,5 +31,9 @@
   "genre_sci_fi": "Ciencia Ficción",
   "genre_documentary": "Documental",
   "synopsis": "Sinopsis",
-  "technicalInformation": "Información Técnica"
+  "technicalInformation": "Información Técnica",
+  "duration": "Duración",
+  "rates": "Calificaciones",
+  "year": "Año",
+  "minutes": "minutos"
 }
