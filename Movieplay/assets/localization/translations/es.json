@@ -35,5 +35,10 @@
   "duration": "Duración",
   "rates": "Calificaciones",
   "year": "Año",
-  "minutes": "minutos"
+  "minutes": "minutos",
+  "noInternetConnection": "No hay conexión a internet",
+  "serverUnderMaintenance": "Servidor en mantenimiento",
+  "noResults": "Sin Resultados",
+  "retry": "Reintentar",
+  "error": "Error"
 }

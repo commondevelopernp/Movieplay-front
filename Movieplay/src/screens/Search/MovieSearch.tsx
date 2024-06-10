@@ -5,25 +5,55 @@ import theme from '../../themes/theme';
 import {useTranslation} from 'react-i18next';
 import {SearchRightIcon} from '../../components/MovieSearch/MovieSearchBar';
 import {ratesOptions, sortReleaseDateOptions} from '../../store/constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  setSearchQuery,
+  setRate,
+  setReleaseDateSort,
+  selectMovieState,
+} from '../../store/slices/movie/movieSlice';
+import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
+import {useNavigation} from '@react-navigation/native';
 
 const MovieSearch = () => {
   const {t} = useTranslation();
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const {query, rate, releaseDateSort} =
+    useSelector(selectMovieState).searchParams;
+  const [localQuery, setLocalQuery] = useState(query);
+  const [localRate, setLocalRate] = useState(rate);
+  const [localReleaseDateSort, setLocalReleaseDateSort] =
+    useState(releaseDateSort);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
-  const [selectedOption1, setSelectedOption1] = useState('--');
-  const [selectedOption2, setSelectedOption2] = useState('--');
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {data, error, isLoading} = useGetMoviesQuery({
+    title: query,
+    genre: rate,
+    sort: releaseDateSort,
+  });
+
+  const onChangeSearch = (newQuery: string) => {
+    setLocalQuery(newQuery);
+  };
 
   const handleSelectOption1 = (option: string) => {
-    setSelectedOption1(option);
+    setLocalRate(option);
     setExpanded1(false);
   };
 
   const handleSelectOption2 = (option: string) => {
-    setSelectedOption2(option);
+    setLocalReleaseDateSort(option);
     setExpanded2(false);
+  };
+
+  const handleSearch = () => {
+    dispatch(setSearchQuery(localQuery));
+    dispatch(setRate(localRate));
+    dispatch(setReleaseDateSort(localReleaseDateSort));
+    navigation.goBack();
   };
 
   return (
@@ -32,7 +62,7 @@ const MovieSearch = () => {
         placeholder={t('searchMovie')}
         placeholderTextColor={theme.colors.text}
         onChangeText={onChangeSearch}
-        value={searchQuery}
+        value={localQuery}
         icon={() => null}
         right={SearchRightIcon}
         style={styles.searchbar}
@@ -41,7 +71,7 @@ const MovieSearch = () => {
       <List.Section>
         <Text style={styles.label}>{t('rate')}</Text>
         <List.Accordion
-          title={selectedOption1}
+          title={localRate}
           expanded={expanded1}
           onPress={() => setExpanded1(!expanded1)}
           titleStyle={styles.accordionTitle}
@@ -57,7 +87,7 @@ const MovieSearch = () => {
         </List.Accordion>
         <Text style={styles.label}>{t('releaseDateSort')}</Text>
         <List.Accordion
-          title={selectedOption2}
+          title={localReleaseDateSort}
           expanded={expanded2}
           onPress={() => setExpanded2(!expanded2)}
           titleStyle={styles.accordionTitle}
@@ -76,9 +106,7 @@ const MovieSearch = () => {
         mode="outlined"
         style={styles.actionButton}
         textColor={theme.colors.text}
-        onPress={() => {
-          /* Handle button press */
-        }}>
+        onPress={handleSearch}>
         {t('search').toUpperCase()}
       </Button>
     </View>

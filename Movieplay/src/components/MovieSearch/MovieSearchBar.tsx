@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import {Searchbar, IconButton} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
@@ -6,6 +6,8 @@ import {useTranslation} from 'react-i18next';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import theme from '../../themes/theme';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../store/store';
 
 export const SearchRightIcon = () => (
   <IconButton icon="magnify" iconColor={theme.colors.text} />
@@ -14,9 +16,11 @@ export const SearchRightIcon = () => (
 type NavigationProp = StackNavigationProp<HomeStackNavigationParams, 'Home'>;
 
 const MovieSearchBar = () => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp>();
+  const movieQueryStr = useSelector(
+    (state: RootState) => state.movie.searchParams.query,
+  );
 
   return (
     <View>
@@ -24,8 +28,7 @@ const MovieSearchBar = () => {
         <Searchbar
           placeholder={t('searchMovie')}
           placeholderTextColor={theme.colors.text}
-          onChangeText={setSearchQuery}
-          value={searchQuery}
+          value={movieQueryStr}
           editable={false}
           icon={() => null}
           right={SearchRightIcon}

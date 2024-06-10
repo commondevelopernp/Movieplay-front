@@ -26,7 +26,6 @@ const Home = ({navigation}: Props) => {
 
   //const {data, error, isLoading} = useGetMoviesQuery({}); //Prepare queries to be used.
   const moviesFromState = useSelector((state: RootState) => state.movie.movies);
-
   return (
     <BackgroundImageWrapper>
       <View style={styles.container}>

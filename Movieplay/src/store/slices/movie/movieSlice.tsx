@@ -1,4 +1,3 @@
-// slices/movieSlice.ts
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../../store';
 import {DataLoadStatus, IMovie} from '../../types';
@@ -9,6 +8,11 @@ interface MovieState {
   total: number;
   status: DataLoadStatus;
   error: string | null;
+  searchParams: {
+    query: string;
+    rate: string;
+    releaseDateSort: string;
+  };
 }
 
 const initialState: MovieState = {
@@ -16,6 +20,11 @@ const initialState: MovieState = {
   total: 0,
   status: DataLoadStatus.NOT_REQUESTED_YET,
   error: null,
+  searchParams: {
+    query: '',
+    rate: '',
+    releaseDateSort: '',
+  },
 };
 
 const movieSlice = createSlice({
@@ -38,10 +47,38 @@ const movieSlice = createSlice({
       state.error = null;
       state.status = DataLoadStatus.NOT_REQUESTED_YET;
     },
+    setSearchParams(
+      state,
+      action: PayloadAction<{
+        query: string;
+        rate: string;
+        releaseDateSort: string;
+      }>,
+    ) {
+      state.searchParams = action.payload;
+    },
+    setSearchQuery(state, action: PayloadAction<string>) {
+      state.searchParams.query = action.payload;
+    },
+    setRate(state, action: PayloadAction<string>) {
+      state.searchParams.rate = action.payload;
+    },
+    setReleaseDateSort(state, action: PayloadAction<string>) {
+      state.searchParams.releaseDateSort = action.payload;
+    },
   },
 });
 
-export const {setMovies, setError, setLoading, clearError} = movieSlice.actions;
+export const {
+  setMovies,
+  setError,
+  setLoading,
+  clearError,
+  setSearchParams,
+  setSearchQuery,
+  setRate,
+  setReleaseDateSort,
+} = movieSlice.actions;
 
 export default movieSlice.reducer;
 

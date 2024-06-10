@@ -35,5 +35,10 @@
   "duration": "Duration",
   "rates": "Rates",
   "year": "Year",
-  "minutes": "minutes"
+  "minutes": "minutes",
+  "noInternetConnection": "No internet connection",
+  "serverUnderMaintenance": "Server under maintenance",
+  "noResults": "No results found",
+  "retry": "Retry",
+  "error": "Error"
 }
