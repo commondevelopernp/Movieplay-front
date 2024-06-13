@@ -35,7 +35,7 @@ const ProfileScreen = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (data && data[0]) {
+    if (data?.length) {
       setProfileImage(
         data[0].profileImage ?? 'https://via.placeholder.com/150',
       );

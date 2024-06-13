@@ -83,6 +83,13 @@ android {
         versionName "1.0"
     }
     signingConfigs {
+        release {        
+            // CN=Movieplay, OU=Grupo 7, O=Movieplay, L=CABA, ST=Buenos Aires, C=AR
+            storeFile file('release.keystore')
+            keyPassword 'ThisIsASecurePass'
+            keyAlias 'androidreleasekey'
+            storePassword 'ThisIsASecurePass'
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'ThisIsASecurePass'
