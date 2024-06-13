@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: "com.google.gms.google-services"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -104,7 +105,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -125,6 +126,36 @@ dependencies {
     }
 }
 
+afterEvaluate {
+    tasks.named("extractDeepLinksRelease").configure {
+        dependsOn(":react-native-google-signin_google-signin:generateReleaseResValues")
+    }
+
+    tasks.named("packageReleaseResources").configure {
+        dependsOn(":react-native-google-signin_google-signin:generateReleaseResValues")
+    }
+
+    tasks.named("checkReleaseAarMetadata").configure {
+        dependsOn(":react-native-google-signin_google-signin:writeReleaseAarMetadata")
+    }
+
+    tasks.named("processReleaseResources").configure {
+        dependsOn(":react-native-google-signin_google-signin:packageReleaseResources")
+    }
+
+    tasks.named("generateReleaseResValues").configure {
+        dependsOn(":react-native-google-signin_google-signin:generateReleaseResValues")
+    }
+
+    tasks.named("mergeReleaseResources").configure {
+        dependsOn(":react-native-google-signin_google-signin:generateReleaseResValues")
+    }
+
+    tasks.named("compileReleaseJavaWithJavac").configure {
+        dependsOn(":react-native-google-signin_google-signin:generateReleaseResValues")
+    }
+}
+
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
-apply plugin: 'com.google.gms.google-services'; applyNativeModulesAppBuildGradle(project)
+applyNativeModulesAppBuildGradle(project)
