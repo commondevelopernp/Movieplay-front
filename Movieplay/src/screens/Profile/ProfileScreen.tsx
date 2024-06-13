@@ -35,7 +35,7 @@ const ProfileScreen = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (data) {
+    if (data && data[0]) {
       setProfileImage(
         data[0].profileImage ?? 'https://via.placeholder.com/150',
       );
@@ -87,7 +87,7 @@ const ProfileScreen = () => {
     try {
       await deleteUser({id});
       setDeleteModalVisible(false);
-      navigation.navigate('HomeNavigator');
+      handleLogout();
     } catch (error) {
       setError(t('deleteFailed'));
     }
