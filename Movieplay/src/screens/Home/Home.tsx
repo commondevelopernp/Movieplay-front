@@ -1,5 +1,5 @@
-import React, {useEffect, useCallback, useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {StackScreenProps} from '@react-navigation/stack';
 import {
@@ -22,13 +22,13 @@ import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
 import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import {RootStackNavigationParams} from '../../navigation/RootNavigation';
 import {genreElements} from '../../store/constants';
-import {setPage, selectMovieState} from '../../store/slices/movie/movieSlice';
+import {selectMovieState} from '../../store/slices/movie/movieSlice';
 import {IMovie} from '../../store/types';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 
 const Home = ({navigation}: Props) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigationObj =
     useNavigation<NavigationProp<RootStackNavigationParams>>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.jwt !== null);
@@ -54,9 +54,9 @@ const Home = ({navigation}: Props) => {
 
   useEffect(() => {
     if (page === 1) {
-      setMovies(data?.movies || []);
+      setMovies(data || []);
     } else {
-      setMovies(prevMovies => [...prevMovies, ...(data?.movies || [])]);
+      setMovies(prevMovies => [...prevMovies, ...(data || [])]);
     }
   }, [data, page]);
 
@@ -68,11 +68,11 @@ const Home = ({navigation}: Props) => {
     navigation.navigate('Movie', {movie});
   };
 
-  const handleLoadMore = useCallback(() => {
-    if (!isLoading && data && data.movies.length === pageSize) {
-      dispatch(setPage(page + 1));
-    }
-  }, [dispatch, page, pageSize, isLoading, data]);
+  // const handleLoadMore = useCallback(() => {
+  //   if (!isLoading && data && data.length === pageSize) {
+  //     dispatch(setPage(page + 1));
+  //   }
+  // }, [dispatch, page, pageSize, isLoading, data]);
 
   const renderContent = () => {
     if (isLoading && page === 1) {
@@ -102,21 +102,23 @@ const Home = ({navigation}: Props) => {
     return (
       <FlatList
         data={movies}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => {
+          return item.id.toString();
+        }}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleMoviePress(item)}>
             <MovieCard movie={item} />
           </TouchableOpacity>
         )}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isLoading && page > 1 ? (
-            <View style={styles.loadingMoreContainer}>
-              <Loading size={'small'} />
-            </View>
-          ) : null
-        }
+        // onEndReached={handleLoadMore}
+        // onEndReachedThreshold={0.5}
+        // ListFooterComponent={
+        //   isLoading && page > 1 ? (
+        //     <View style={styles.loadingMoreContainer}>
+        //       <Loading size={'small'} />
+        //     </View>
+        //   ) : null
+        // }
       />
     );
   };

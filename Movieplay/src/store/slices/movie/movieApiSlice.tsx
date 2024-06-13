@@ -4,7 +4,7 @@ import {apiSlice} from '../api/apiSlice';
 export const movieApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getMovies: builder.query<
-      {movies: IMovie[]; total: number},
+      IMovie[],
       {
         genre?: string;
         title?: string;
@@ -23,7 +23,7 @@ export const movieApiSlice = apiSlice.injectEndpoints({
     }),
     rateMovie: builder.mutation<void, {id: string; rating: {rating: number}}>({
       query: ({id, rating}) => ({
-        url: `/movies/${id}/rating`,
+        url: `/api/movies/${id}/rating`,
         method: 'POST',
         body: rating,
       }),
@@ -31,14 +31,14 @@ export const movieApiSlice = apiSlice.injectEndpoints({
     }),
     addFavoriteMovie: builder.mutation<void, {id: string}>({
       query: ({id}) => ({
-        url: `/movies/${id}/favorites`,
+        url: `/api/movies/${id}/favorites`,
         method: 'POST',
       }),
       invalidatesTags: ['Movie'],
     }),
     removeFavoriteMovie: builder.mutation<void, {id: string}>({
       query: ({id}) => ({
-        url: `/movies/${id}/favorites`,
+        url: `/api/movies/${id}/favorites`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Movie'],

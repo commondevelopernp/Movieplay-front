@@ -14,7 +14,7 @@ export interface IMovie {
   title: string;
   subtitle: string;
   synopsis: string;
-  genres: string[];
+  genre: string[];
   images: string[];
   trailerVideoUrl: string;
   year: number;

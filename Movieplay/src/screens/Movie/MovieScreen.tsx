@@ -15,7 +15,6 @@ type Props = StackScreenProps<HomeStackNavigationParams, 'Movie'>;
 const MovieScreen = ({route}: Props) => {
   const {movie} = route.params;
   const {t} = useTranslation();
-
   return (
     <BackgroundImageWrapper>
       <ScrollView contentContainerStyle={styles.container}>
@@ -23,7 +22,7 @@ const MovieScreen = ({route}: Props) => {
           <Image style={styles.moviePoster} source={{uri: movie.images[0]}} />
           <View style={styles.movieDetails}>
             <Text style={styles.title}>{movie.title}</Text>
-            <GenreLabel genre={movie.genres.join(', ')} />
+            <GenreLabel genre={movie.genre.join(', ')} />
             <Ratings rating={movie.rating} />
             <Actions />
             <Image

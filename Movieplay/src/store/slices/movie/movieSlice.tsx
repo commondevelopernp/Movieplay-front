@@ -32,7 +32,7 @@ const initialState: MovieState = {
     rate: '',
     releaseDateSort: '',
     page: 1,
-    pageSize: 10,
+    pageSize: 100,
   },
 };
 
