@@ -2,11 +2,6 @@
 import {IMovie} from '../../types';
 import {apiSlice} from '../api/apiSlice';
 
-type MoviesResponse = {
-  total: number;
-  movies: IMovie[];
-};
-
 type MovieRatingRequest = {
   rating: number;
 };
@@ -14,11 +9,10 @@ type MovieRatingRequest = {
 export const movieApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getMovies: builder.query<
-      MoviesResponse,
+      IMovie[],
       {
         genre?: string;
         title?: string;
-        actor?: string;
         sort?: string;
         order?: string;
         page?: number;
@@ -26,7 +20,7 @@ export const movieApiSlice = apiSlice.injectEndpoints({
       }
     >({
       query: params => ({
-        url: '/movies',
+        url: '/api/movies',
         method: 'GET',
         params,
       }),

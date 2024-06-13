@@ -1,19 +1,20 @@
 export interface IUser {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
+  nickname: string;
   email: string;
+  profileImage?: string;
   ratings: number[];
-  favorites: number[];
-  nickname?: string;
+  favorited: number[]; //Fix this is wrong.
 }
 
 export interface IMovie {
-  id: string;
+  id: number;
   title: string;
   subtitle: string;
   synopsis: string;
-  genre: string;
+  genres: string[];
   images: string[];
   trailerVideoUrl: string;
   year: number;

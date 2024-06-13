@@ -1,6 +1,6 @@
-import React from 'react';
-import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
-import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
+import React, {useEffect, useCallback} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 import {StackScreenProps} from '@react-navigation/stack';
 import {
   FlatList,
@@ -9,23 +9,95 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {Text} from 'react-native-paper';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+
+import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
-import {genreElements} from '../../store/constants';
 import GenreFilterButton from '../../components/GenreButton/GenreButton';
 import MovieCard from '../../components/MovieCard/MovieCard';
-import {IMovie} from '../../store/types';
-import {useSelector} from 'react-redux';
+import Loading from '../../components/Loading/Loading';
 import {RootState} from '../../store/store';
+import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
+import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
+import {RootStackNavigationParams} from '../../navigation/RootNavigation';
+import {genreElements} from '../../store/constants';
+import {setPage, selectMovieState} from '../../store/slices/movie/movieSlice';
+import {IMovie} from '../../store/types';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 
 const Home = ({navigation}: Props) => {
+  const dispatch = useDispatch();
+  const navigationObj =
+    useNavigation<NavigationProp<RootStackNavigationParams>>();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.jwt !== null);
+  const {t} = useTranslation();
+  const movieState = useSelector(selectMovieState);
+  const {query, genre, sort, order, page, pageSize} = movieState.searchParams;
+  const {data, error, isLoading} = useGetMoviesQuery({
+    genre,
+    title: query,
+    sort,
+    order,
+    page,
+    pageSize,
+  });
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigationObj.navigate('Login');
+    }
+  }, [isLoggedIn, navigationObj]);
+
   const handleMoviePress = (movie: IMovie) => {
     navigation.navigate('Movie', {movie});
   };
 
-  //const {data, error, isLoading} = useGetMoviesQuery({}); //Prepare queries to be used.
-  const moviesFromState = useSelector((state: RootState) => state.movie.movies);
+  const handleLoadMore = useCallback(() => {
+    dispatch(setPage(page + 1));
+  }, [dispatch, page]);
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <Loading size={'large'} />
+        </View>
+      );
+    }
+
+    if (error) {
+      return (
+        <View style={styles.messageContainer}>
+          <Text style={styles.text}>{t('error')}</Text>
+        </View>
+      );
+    }
+
+    if (!data || data.length === 0) {
+      return (
+        <View style={styles.messageContainer}>
+          <Text style={styles.text}>{t('noResults')}</Text>
+        </View>
+      );
+    }
+
+    return (
+      <FlatList
+        data={data}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({item}) => (
+          <TouchableOpacity onPress={() => handleMoviePress(item)}>
+            <MovieCard movie={item} />
+          </TouchableOpacity>
+        )}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+      />
+    );
+  };
+
   return (
     <BackgroundImageWrapper>
       <View style={styles.container}>
@@ -34,28 +106,17 @@ const Home = ({navigation}: Props) => {
             <MovieSearchBar />
           </View>
           <View style={styles.genreContainer}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
-              {genreElements.map((genre, index) => {
-                return (
-                  <GenreFilterButton
-                    key={index}
-                    value={genre.value}
-                    label={genre.labelKey}
-                  />
-                );
-              })}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {genreElements.map(genreItem => (
+                <GenreFilterButton
+                  key={genreItem.value}
+                  value={genreItem.value}
+                  label={genreItem.labelKey}
+                />
+              ))}
             </ScrollView>
           </View>
-          <FlatList
-            data={moviesFromState}
-            renderItem={({item}) => (
-              <TouchableOpacity onPress={() => handleMoviePress(item)}>
-                <MovieCard movie={item} />
-              </TouchableOpacity>
-            )}
-          />
+          {renderContent()}
         </View>
       </View>
     </BackgroundImageWrapper>
@@ -71,9 +132,22 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     padding: 15,
   },
-  genreContainer: {zIndex: 2},
+  loadingContainer: {
+    alignSelf: 'center',
+    marginTop: 250,
+  },
+  messageContainer: {
+    alignSelf: 'center',
+    marginTop: 270,
+  },
+  text: {
+    color: 'white',
+    fontSize: 15,
+  },
+  genreContainer: {
+    zIndex: 2,
+  },
   mainScreen: {
-    //flex: 1,
     width: '100%',
     marginBottom: 200,
   },

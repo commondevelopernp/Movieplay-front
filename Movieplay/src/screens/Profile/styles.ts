@@ -78,4 +78,9 @@ export const styles = StyleSheet.create({
   deleteCancelButton: {
     backgroundColor: '#1E90FF',
   },
+  errorText: {
+    color: '#FF4500',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
 });

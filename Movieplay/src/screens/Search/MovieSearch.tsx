@@ -10,30 +10,23 @@ import {
   setSearchQuery,
   setRate,
   setReleaseDateSort,
-  selectMovieState,
 } from '../../store/slices/movie/movieSlice';
-import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
 import {useNavigation} from '@react-navigation/native';
+import {RootState} from '../../store/store';
 
 const MovieSearch = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {query, rate, releaseDateSort} =
-    useSelector(selectMovieState).searchParams;
+  const {query, rate, releaseDateSort} = useSelector(
+    (state: RootState) => state.movie.searchParams,
+  );
   const [localQuery, setLocalQuery] = useState(query);
   const [localRate, setLocalRate] = useState(rate);
   const [localReleaseDateSort, setLocalReleaseDateSort] =
     useState(releaseDateSort);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {data, error, isLoading} = useGetMoviesQuery({
-    title: query,
-    genre: rate,
-    sort: releaseDateSort,
-  });
 
   const onChangeSearch = (newQuery: string) => {
     setLocalQuery(newQuery);
@@ -96,7 +89,7 @@ const MovieSearch = () => {
             <List.Item
               key={opt}
               title={t(opt)}
-              onPress={() => handleSelectOption2(t(opt))}
+              onPress={() => handleSelectOption2(opt)}
               titleStyle={styles.listItem}
             />
           ))}

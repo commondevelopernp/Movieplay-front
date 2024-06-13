@@ -1,7 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../../store';
 import {DataLoadStatus, IMovie} from '../../types';
-import MoviesMockData from '../../../components/MovieCard/MoviesMockData';
 
 interface MovieState {
   movies: IMovie[];
@@ -10,20 +9,30 @@ interface MovieState {
   error: string | null;
   searchParams: {
     query: string;
+    genre: string;
+    sort: string;
+    order: string;
+    page: number;
+    pageSize: number;
     rate: string;
     releaseDateSort: string;
   };
 }
 
 const initialState: MovieState = {
-  movies: MoviesMockData,
+  movies: [],
   total: 0,
   status: DataLoadStatus.NOT_REQUESTED_YET,
   error: null,
   searchParams: {
     query: '',
+    genre: '',
+    sort: '',
+    order: 'asc',
     rate: '',
     releaseDateSort: '',
+    page: 1,
+    pageSize: 10,
   },
 };
 
@@ -51,6 +60,11 @@ const movieSlice = createSlice({
       state,
       action: PayloadAction<{
         query: string;
+        genre: string;
+        sort: string;
+        order: string;
+        page: number;
+        pageSize: number;
         rate: string;
         releaseDateSort: string;
       }>,
@@ -59,6 +73,21 @@ const movieSlice = createSlice({
     },
     setSearchQuery(state, action: PayloadAction<string>) {
       state.searchParams.query = action.payload;
+    },
+    setGenre(state, action: PayloadAction<string>) {
+      state.searchParams.genre = action.payload;
+    },
+    setSort(state, action: PayloadAction<string>) {
+      state.searchParams.sort = action.payload;
+    },
+    setOrder(state, action: PayloadAction<string>) {
+      state.searchParams.order = action.payload;
+    },
+    setPage(state, action: PayloadAction<number>) {
+      state.searchParams.page = action.payload;
+    },
+    setPageSize(state, action: PayloadAction<number>) {
+      state.searchParams.pageSize = action.payload;
     },
     setRate(state, action: PayloadAction<string>) {
       state.searchParams.rate = action.payload;
@@ -76,6 +105,11 @@ export const {
   clearError,
   setSearchParams,
   setSearchQuery,
+  setGenre,
+  setSort,
+  setOrder,
+  setPage,
+  setPageSize,
   setRate,
   setReleaseDateSort,
 } = movieSlice.actions;

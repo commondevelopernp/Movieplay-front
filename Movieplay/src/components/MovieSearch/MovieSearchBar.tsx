@@ -4,9 +4,9 @@ import {Searchbar, IconButton} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {useSelector} from 'react-redux';
 import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import theme from '../../themes/theme';
-import {useSelector} from 'react-redux';
 import {RootState} from '../../store/store';
 
 export const SearchRightIcon = () => (
@@ -22,6 +22,11 @@ const MovieSearchBar = () => {
     (state: RootState) => state.movie.searchParams.query,
   );
 
+  // const onChangeSearch = (query: string) => {
+  //   //dispatch(setSearchQuery(query));
+  //   navigation.navigate('Search'); // Redirect to the search screen
+  // };
+
   return (
     <View>
       <TouchableOpacity onPress={() => navigation.navigate('Search')}>
@@ -30,6 +35,7 @@ const MovieSearchBar = () => {
           placeholderTextColor={theme.colors.text}
           value={movieQueryStr}
           editable={false}
+          //onChangeText={onChangeSearch}
           icon={() => null}
           right={SearchRightIcon}
           style={styles.searchbar}

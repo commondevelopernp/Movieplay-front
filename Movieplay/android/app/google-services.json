@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "387572187599",
-    "project_id": "appdistribuidas-a444b",
-    "storage_bucket": "appdistribuidas-a444b.appspot.com"
+    "project_number": "571491722298",
+    "project_id": "moviplay-9d1be",
+    "storage_bucket": "moviplay-9d1be.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:387572187599:android:08b822a62d83b555ba52ba",
+        "mobilesdk_app_id": "1:571491722298:android:83f4c6b18eeaf741438103",
         "android_client_info": {
           "package_name": "com.movieplay"
         }
       },
       "oauth_client": [
         {
-          "client_id": "387572187599-gmu0j7apj5n1cor4nuucct49bt0lf557.apps.googleusercontent.com",
+          "client_id": "571491722298-31oi94e90dhe9sj3vsff9ga28blfsa2r.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.movieplay",
-            "certificate_hash": "1cf472a8daf8ec798adb9730ced08ca0dbb18d82"
+            "certificate_hash": "88e3ec2cc9e7abd4e53a0a510260b1b5eb571fd0"
           }
         },
         {
-          "client_id": "387572187599-535bcell45ubre8morp35b4s08mvhv55.apps.googleusercontent.com",
+          "client_id": "571491722298-6l6ut2oqtftcfaud0gid7ropui14nacr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBE0tJopsQ2oY_Re6o0Fnlzh_s5AtqBKWk"
+          "current_key": "AIzaSyCNObdbv3BIqdVvVSLZS0QVcvcbCTpbcf8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "387572187599-535bcell45ubre8morp35b4s08mvhv55.apps.googleusercontent.com",
+              "client_id": "571491722298-6l6ut2oqtftcfaud0gid7ropui14nacr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
