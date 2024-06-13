@@ -10,6 +10,7 @@ import {
   setSearchQuery,
   setRate,
   setReleaseDateSort,
+  setPage,
 } from '../../store/slices/movie/movieSlice';
 import {useNavigation} from '@react-navigation/native';
 import {RootState} from '../../store/store';
@@ -46,6 +47,7 @@ const MovieSearch = () => {
     dispatch(setSearchQuery(localQuery));
     dispatch(setRate(localRate));
     dispatch(setReleaseDateSort(localReleaseDateSort));
+    dispatch(setPage(1)); // Reset to first page
     navigation.goBack();
   };
 

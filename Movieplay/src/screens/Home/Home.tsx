@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {StackScreenProps} from '@react-navigation/stack';
@@ -35,7 +35,7 @@ const Home = ({navigation}: Props) => {
   const {t} = useTranslation();
   const movieState = useSelector(selectMovieState);
   const {query, genre, sort, order, page, pageSize} = movieState.searchParams;
-  const {data, error, isLoading} = useGetMoviesQuery({
+  const {data, error, isLoading, refetch} = useGetMoviesQuery({
     genre,
     title: query,
     sort,
@@ -44,22 +44,38 @@ const Home = ({navigation}: Props) => {
     pageSize,
   });
 
+  const [movies, setMovies] = useState<IMovie[]>([]);
+
   useEffect(() => {
     if (!isLoggedIn) {
       navigationObj.navigate('Login');
     }
   }, [isLoggedIn, navigationObj]);
 
+  useEffect(() => {
+    if (page === 1) {
+      setMovies(data?.movies || []);
+    } else {
+      setMovies(prevMovies => [...prevMovies, ...(data?.movies || [])]);
+    }
+  }, [data, page]);
+
+  useEffect(() => {
+    refetch(); // Refetch movies when search parameters change
+  }, [query, genre, sort, order, page, pageSize, refetch]);
+
   const handleMoviePress = (movie: IMovie) => {
     navigation.navigate('Movie', {movie});
   };
 
   const handleLoadMore = useCallback(() => {
-    dispatch(setPage(page + 1));
-  }, [dispatch, page]);
+    if (!isLoading && data && data.movies.length === pageSize) {
+      dispatch(setPage(page + 1));
+    }
+  }, [dispatch, page, pageSize, isLoading, data]);
 
   const renderContent = () => {
-    if (isLoading) {
+    if (isLoading && page === 1) {
       return (
         <View style={styles.loadingContainer}>
           <Loading size={'large'} />
@@ -75,7 +91,7 @@ const Home = ({navigation}: Props) => {
       );
     }
 
-    if (!data || data.length === 0) {
+    if (!movies || movies.length === 0) {
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.text}>{t('noResults')}</Text>
@@ -85,7 +101,7 @@ const Home = ({navigation}: Props) => {
 
     return (
       <FlatList
-        data={data}
+        data={movies}
         keyExtractor={item => item.id.toString()}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleMoviePress(item)}>
@@ -94,6 +110,13 @@ const Home = ({navigation}: Props) => {
         )}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          isLoading && page > 1 ? (
+            <View style={styles.loadingMoreContainer}>
+              <Loading size={'small'} />
+            </View>
+          ) : null
+        }
       />
     );
   };
@@ -150,6 +173,9 @@ const styles = StyleSheet.create({
   mainScreen: {
     width: '100%',
     marginBottom: 200,
+  },
+  loadingMoreContainer: {
+    paddingVertical: 20,
   },
 });
 

@@ -3,6 +3,9 @@ import {StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import theme from '../../themes/theme';
 import {useTranslation} from 'react-i18next';
+import {setGenre, setPage} from '../../store/slices/movie/movieSlice';
+import {useDispatch} from 'react-redux';
+import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
 
 type GenreFilterButtonProps = {
   value: string;
@@ -12,6 +15,14 @@ type GenreFilterButtonProps = {
 const GenreFilterButton = (props: GenreFilterButtonProps) => {
   const {value, label} = props;
   const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const {refetch} = useGetMoviesQuery({});
+
+  const handlePress = () => {
+    dispatch(setGenre(value));
+    dispatch(setPage(1)); // Reset to first page
+    refetch(); // Trigger the API request with new genre
+  };
 
   return (
     <Button
@@ -19,9 +30,7 @@ const GenreFilterButton = (props: GenreFilterButtonProps) => {
       style={styles.button}
       textColor={theme.colors.text}
       uppercase
-      onPress={() => {
-        console.log(value);
-      }}>
+      onPress={handlePress}>
       {t(label)}
     </Button>
   );

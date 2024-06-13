@@ -1,15 +1,10 @@
-// slices/movieApiSlice.ts
 import {IMovie} from '../../types';
 import {apiSlice} from '../api/apiSlice';
-
-type MovieRatingRequest = {
-  rating: number;
-};
 
 export const movieApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getMovies: builder.query<
-      IMovie[],
+      {movies: IMovie[]; total: number},
       {
         genre?: string;
         title?: string;
@@ -19,23 +14,21 @@ export const movieApiSlice = apiSlice.injectEndpoints({
         pageSize?: number;
       }
     >({
-      query: params => ({
+      query: ({genre, title, sort, order, page, pageSize}) => ({
         url: '/api/movies',
         method: 'GET',
-        params,
+        params: {genre, title, sort, order, page, pageSize},
       }),
       providesTags: ['Movie'],
     }),
-    rateMovie: builder.mutation<void, {id: string; rating: MovieRatingRequest}>(
-      {
-        query: ({id, rating}) => ({
-          url: `/movies/${id}/rating`,
-          method: 'POST',
-          body: rating,
-        }),
-        invalidatesTags: ['Movie'],
-      },
-    ),
+    rateMovie: builder.mutation<void, {id: string; rating: {rating: number}}>({
+      query: ({id, rating}) => ({
+        url: `/movies/${id}/rating`,
+        method: 'POST',
+        body: rating,
+      }),
+      invalidatesTags: ['Movie'],
+    }),
     addFavoriteMovie: builder.mutation<void, {id: string}>({
       query: ({id}) => ({
         url: `/movies/${id}/favorites`,
