@@ -1,11 +1,8 @@
 // slices/authApiSlice.ts
-import {IUser} from '../../types';
 import {apiSlice} from '../api/apiSlice';
 
 type AuthResponse = {
   jwt: string;
-  user: IUser;
-  refreshToken: string;
 };
 
 type RefreshResponse = {

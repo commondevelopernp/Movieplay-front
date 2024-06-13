@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {
@@ -18,11 +17,7 @@ import {
 import auth from '@react-native-firebase/auth';
 import {useDispatch} from 'react-redux';
 
-import {
-  setAccessToken,
-  setRefreshToken,
-  setUser,
-} from '../../../store/slices/auth/authSlice';
+import {setAccessToken} from '../../../store/slices/auth/authSlice';
 import {useLoginMutation} from '../../../store/slices/auth/authApiSlice';
 
 type Props = StackScreenProps<RootStackNavigationParams, 'Login'>;
@@ -38,19 +33,16 @@ const Login = ({navigation}: Props) => {
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCredential);
-      console.log('User signed in with Google!');
 
       if (!idToken) {
         return;
       }
       // Send the OAuth token to your API and handle the response
       const response = await login({oauthToken: idToken}).unwrap();
-      dispatch(setAccessToken(response.jwt));
-      dispatch(setRefreshToken(response.refreshToken));
-      dispatch(setUser(response.user));
 
-      // Navigate to the next screen or perform any other actions
-      //navigation.navigate('Home'); // Replace 'Home' with your desired screen
+      dispatch(setAccessToken(response.jwt));
+
+      navigation.navigate('TabNavigator');
     } catch (error) {
       if (typeof error === 'object' && error !== null && 'code' in error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {

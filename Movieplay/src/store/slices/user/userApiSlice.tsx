@@ -1,31 +1,33 @@
 import {IUser} from '../../types';
 import {apiSlice} from '../api/apiSlice';
 
-type UserProfileResponse = IUser;
-
 type UpdateProfileRequest = {
-  nickname: string;
+  id: number;
+  nickname?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
 };
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
-    deleteUser: builder.mutation<void, void>({
-      query: () => ({
-        url: '/users',
+    deleteUser: builder.mutation<void, {id: number}>({
+      query: ({id}) => ({
+        url: `/api/users/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['User'],
     }),
-    getUserProfile: builder.query<UserProfileResponse, void>({
+    getUserProfile: builder.query<IUser[], void>({
       query: () => ({
-        url: '/users',
+        url: '/api/users',
         method: 'GET',
       }),
       providesTags: ['User'],
     }),
     updateUserProfile: builder.mutation<void, UpdateProfileRequest>({
-      query: body => ({
-        url: '/users',
+      query: ({id, ...body}) => ({
+        url: `/api/users/${id}`,
         method: 'PUT',
         body,
       }),

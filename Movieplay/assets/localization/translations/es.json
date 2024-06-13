@@ -40,5 +40,11 @@
   "serverUnderMaintenance": "Servidor en mantenimiento",
   "noResults": "Sin Resultados",
   "retry": "Reintentar",
-  "error": "Error"
+  "error": "Error",
+  "nicknameRequired": "El nickname es obligatorio",
+  "firstNameRequired": "El nombre es obligatorio",
+  "lastNameRequired": "El apellido es obligatorio",
+  "validEmailRequired": "Se requiere un email válido",
+  "updateFailed": "Fallo al actualizar el perfil",
+  "deleteFailed": "Fallo al eliminar la cuenta"
 }

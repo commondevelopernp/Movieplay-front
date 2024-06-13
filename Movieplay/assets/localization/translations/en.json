@@ -40,5 +40,11 @@
   "serverUnderMaintenance": "Server under maintenance",
   "noResults": "No results found",
   "retry": "Retry",
-  "error": "Error"
+  "error": "Error",
+  "nicknameRequired": "Nickname is required",
+  "firstNameRequired": "First name is required",
+  "lastNameRequired": "Last name is required",
+  "validEmailRequired": "A valid email is required",
+  "updateFailed": "Failed to update profile",
+  "deleteFailed": "Failed to delete account"
 }
