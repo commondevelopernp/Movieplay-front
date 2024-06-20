@@ -1,31 +1,30 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Modal, Image} from 'react-native';
-import {styles} from './styles'; // Adjust the import path accordingly
-import ProfileInput from './ProfileInput'; // Adjust the import path accordingly
-import {useTranslation} from 'react-i18next';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, Modal, Image } from 'react-native';
+import { styles } from './styles'; // Ajusta la ruta de importación según corresponda
+import ProfileInput from './ProfileInput'; // Ajusta la ruta de importación según corresponda
+import { useTranslation } from 'react-i18next';
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
   useDeleteUserMutation,
 } from '../../store/slices/user/userApiSlice';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {tabNavigatorParams} from '../../navigation/tabNavigator';
-import {useDispatch} from 'react-redux';
-import {clearUser} from '../../store/slices/auth/authSlice';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { tabNavigatorParams } from '../../navigation/tabNavigator';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '../../store/slices/auth/authSlice';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const ProfileScreen = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp<tabNavigatorParams>>();
   const dispatch = useDispatch();
 
-  const {data} = useGetUserProfileQuery();
+  const { data } = useGetUserProfileQuery();
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
 
-  const [id, setUserId] = useState(-1); // not the correct wat but fast.
-  const [ProfileImage, setProfileImage] = useState<string | undefined>(
-    'https://via.placeholder.com/150',
-  ); // not the correct wat but fast.
+  const [id, setUserId] = useState(-1);
+  const [profileImage, setProfileImage] = useState<string | undefined>('https://via.placeholder.com/150');
   const [nickname, setNickname] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -36,9 +35,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     if (data?.length) {
-      setProfileImage(
-        data[0].profileImage ?? 'https://via.placeholder.com/150',
-      );
+      setProfileImage(data[0].profileImage ?? 'https://via.placeholder.com/150');
       setUserId(data[0].id);
       setNickname(data[0].nickname);
       setFirstName(data[0].firstName);
@@ -68,11 +65,11 @@ const ProfileScreen = () => {
     return true;
   };
 
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = async (imageUrl) => {
     if (!validateFields()) return;
 
     try {
-      await updateUserProfile({id, nickname, firstName, lastName, email});
+      await updateUserProfile({ id, nickname, firstName, lastName, email, profileImage: imageUrl });
       setSuccessModalVisible(true);
     } catch (error) {
       setError(t('updateFailed'));
@@ -85,7 +82,7 @@ const ProfileScreen = () => {
 
   const confirmDeleteAccount = async () => {
     try {
-      await deleteUser({id});
+      await deleteUser({ id });
       setDeleteModalVisible(false);
       handleLogout();
     } catch (error) {
@@ -98,10 +95,27 @@ const ProfileScreen = () => {
     navigation.navigate('HomeNavigator');
   };
 
+  const handleSelectImage = async () => {
+    const result = await launchImageLibrary({ mediaType: 'photo', maxWidth: 150, maxHeight: 150, quality: 1 });
+    if (result.assets?.length) {
+      const selectedImage = result.assets[0];
+      const imageUri = selectedImage.uri;
+
+      // Here, we assume imageUri is already a URL you want to save in your database.
+      setProfileImage(imageUri);
+
+      // Now update the user profile with the new image URL
+      await handleUpdateProfile(imageUri);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profilePictureContainer}>
-        <Image style={styles.profilePicture} source={{uri: ProfileImage}} />
+        <Image style={styles.profilePicture} source={{ uri: profileImage }} />
+        <TouchableOpacity onPress={handleSelectImage}>
+          <Text style={styles.text}>{t('Change Profile Picture')}</Text>
+        </TouchableOpacity>
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <ProfileInput
@@ -142,13 +156,15 @@ const ProfileScreen = () => {
         visible={successModalVisible}
         transparent
         animationType="slide"
-        onRequestClose={() => setSuccessModalVisible(false)}>
+        onRequestClose={() => setSuccessModalVisible(false)}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>{t('profileUpdateSuccess')}</Text>
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={() => setSuccessModalVisible(false)}>
+              onPress={() => setSuccessModalVisible(false)}
+            >
               <Text style={styles.modalButtonText}>{t('ok')}</Text>
             </TouchableOpacity>
           </View>
@@ -159,21 +175,22 @@ const ProfileScreen = () => {
         visible={deleteModalVisible}
         transparent
         animationType="slide"
-        onRequestClose={() => setDeleteModalVisible(false)}>
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              {t('accountDeleteConfirmation')}
-            </Text>
+            <Text style={styles.modalText}>{t('accountDeleteConfirmation')}</Text>
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.deleteConfirmButton]}
-                onPress={confirmDeleteAccount}>
+                onPress={confirmDeleteAccount}
+              >
                 <Text style={styles.modalButtonText}>{t('yes')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.deleteCancelButton]}
-                onPress={() => setDeleteModalVisible(false)}>
+                onPress={() => setDeleteModalVisible(false)}
+              >
                 <Text style={styles.modalButtonText}>{t('no')}</Text>
               </TouchableOpacity>
             </View>

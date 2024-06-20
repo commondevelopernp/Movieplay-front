@@ -7,6 +7,7 @@ type UpdateProfileRequest = {
   firstName?: string;
   lastName?: string;
   email?: string;
+  profileImage?: string;
 };
 
 export const userApiSlice = apiSlice.injectEndpoints({

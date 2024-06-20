@@ -83,4 +83,9 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
+  text: {
+    color: '#00BFFF',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
 });
