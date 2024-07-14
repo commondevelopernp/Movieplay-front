@@ -1,8 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
 import GenreLabel from './Components/GenreLabel';
-import Ratings from './Components/Ratings';
-import Actions from './Components/Actions';
+import RatingsAndActions from './Components/RatingsAndActions';
 import Synopsis from './Components/Synopsis';
 import TechnicalInfo from './Components/TechnicalInfo';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
@@ -23,8 +22,7 @@ const MovieScreen = ({route}: Props) => {
           <View style={styles.movieDetails}>
             <Text style={styles.title}>{movie.title}</Text>
             <GenreLabel genre={movie.genre.join(', ')} />
-            <Ratings rating={movie.rating} />
-            <Actions />
+            <RatingsAndActions rating={movie.rating} /> 
             <Image
               style={styles.imageBackground}
               source={require('../../assets/background-movie.png')}
