@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, Share, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const RatingsAndActions: React.FC<{rating: number}> = ({ rating }) => {
+const RatingsAndActions: React.FC<{rating: number, movieTitle: string, movieSynopsis: string}> = ({ rating, movieTitle, movieSynopsis }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRating, setSelectedRating] = useState(rating);
   const [isRated, setIsRated] = useState(false);
@@ -16,6 +16,29 @@ const RatingsAndActions: React.FC<{rating: number}> = ({ rating }) => {
     setModalVisible(false);
   };
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `¡Mira esta película increíble: ${movieTitle}!\n\nSinopsis: ${movieSynopsis}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // Compartido con una actividad específica
+          console.log(result.activityType);
+        } else {
+          // Compartido
+          Alert.alert('Compartido exitosamente');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // Dismissed
+        Alert.alert('Compartido cancelado');
+      }
+    } catch (error) {
+      //Alert.alert('Error al compartir:', error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button}>
@@ -24,7 +47,7 @@ const RatingsAndActions: React.FC<{rating: number}> = ({ rating }) => {
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
         <Icon name="star" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onShare}>
         <Icon name="share-alt" size={24} color="white" />
       </TouchableOpacity>
 
