@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { StackScreenProps } from '@react-navigation/stack';
 import {
@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Text } from 'react-native-paper'; // Asegúrate de importar Text de 'react-native-paper'
+import { Text, Button } from 'react-native-paper'; // Asegúrate de importar Button de 'react-native-paper'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
@@ -18,7 +18,10 @@ import GenreFilterButton from '../../components/GenreButton/GenreButton';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
 import { RootState } from '../../store/store';
-import { useGetMoviesQuery } from '../../store/slices/movie/movieApiSlice';
+import {
+  useGetMoviesQuery,
+  setPage as setPageAction,
+} from '../../store/slices/movie/movieApiSlice';
 import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
 import { RootStackNavigationParams } from '../../navigation/RootNavigation';
 import { genreElements } from '../../store/constants';
@@ -30,9 +33,10 @@ type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 const Home = ({ navigation }: Props) => {
   const navigationObj = useNavigation<NavigationProp<RootStackNavigationParams>>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.jwt !== null);
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const movieState = useSelector(selectMovieState);
-  const { query, genre, sort, order, pageSize, page } = movieState.searchParams; // Asegúrate de extraer 'page' del estado
+  const { query, genre, sort, order, pageSize } = movieState.searchParams;
   const { data, error, isLoading, refetch } = useGetMoviesQuery({
     genre,
     title: query,
@@ -52,20 +56,24 @@ const Home = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (data) {
-      setMovies(prevMovies => (page === 1 ? data : [...prevMovies, ...data])); // Asegúrate de que 'page' esté definido y disponible aquí
+      setMovies(data);
     }
-  }, [data, page]);
+  }, [data]);
 
   useEffect(() => {
-    refetch({ page });
-  }, [query, genre, sort, order, pageSize, refetch, page]);
+    refetch({ page: 1 });
+  }, [query, genre, sort, order, pageSize, refetch]);
 
   const handleMoviePress = (movie: IMovie) => {
     navigation.navigate('Movie', { movie });
   };
 
+  const handleLoadMore = () => {
+    dispatch(setPageAction(movieState.searchParams.page + 1)); // Incrementar la página
+  };
+
   const renderContent = () => {
-    if (isLoading && page === 1) {
+    if (isLoading && movieState.searchParams.page === 1) {
       return (
         <View style={styles.loadingContainer}>
           <Loading size={'large'} />
@@ -90,17 +98,34 @@ const Home = ({ navigation }: Props) => {
     }
 
     return (
-      <FlatList
-        data={movies}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleMoviePress(item)}>
-            <MovieCard movie={item} />
-          </TouchableOpacity>
+      <>
+        <FlatList
+          data={movies}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleMoviePress(item)}>
+              <MovieCard movie={item} />
+            </TouchableOpacity>
+          )}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isLoading && movieState.searchParams.page > 1 ? (
+              <View style={styles.loadingMoreContainer}>
+                <Loading size={'small'} />
+              </View>
+            ) : null
+          }
+        />
+        {isLoading || movies.length % pageSize !== 0 ? null : (
+          <Button
+            mode="outlined"
+            style={styles.loadMoreButton}
+            onPress={handleLoadMore}
+          >
+            {t('loadMore').toUpperCase()}
+          </Button>
         )}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={isLoading && page > 1 ? <Loading size={'small'} /> : null}
-      />
+      </>
     );
   };
 
@@ -152,6 +177,17 @@ const styles = StyleSheet.create({
   },
   genreContainer: {
     zIndex: 2,
+  },
+  mainScreen: {
+    width: '100%',
+    marginBottom: 200,
+  },
+  loadingMoreContainer: {
+    paddingVertical: 20,
+  },
+  loadMoreButton: {
+    marginVertical: 10,
+    alignSelf: 'center',
   },
 });
 
