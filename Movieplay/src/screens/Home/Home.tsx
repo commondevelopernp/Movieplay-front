@@ -8,9 +8,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  Button, // Nuevo botón "Ver más"
 } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text } from 'react-native-paper'; // Asegúrate de importar Text de 'react-native-paper'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
@@ -39,12 +38,11 @@ const Home = ({ navigation }: Props) => {
     title: query,
     sort,
     order,
-    page: 1, // Comienza desde la página 1
+    page: 1,
     pageSize,
   });
 
   const [movies, setMovies] = useState<IMovie[]>([]);
-  const [page, setPage] = useState(1); // Estado para mantener la página actual
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -59,15 +57,11 @@ const Home = ({ navigation }: Props) => {
   }, [data, page]);
 
   useEffect(() => {
-    refetch({ page }); // Refresca las películas cuando cambia el parámetro de búsqueda
+    refetch({ page });
   }, [query, genre, sort, order, pageSize, refetch, page]);
 
   const handleMoviePress = (movie: IMovie) => {
     navigation.navigate('Movie', { movie });
-  };
-
-  const handleLoadMore = () => {
-    setPage(prevPage => prevPage + 1); // Incrementa la página
   };
 
   const renderContent = () => {
@@ -96,21 +90,17 @@ const Home = ({ navigation }: Props) => {
     }
 
     return (
-      <>
-        <FlatList
-          data={movies}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleMoviePress(item)}>
-              <MovieCard movie={item} />
-            </TouchableOpacity>
-          )}
-          onEndReached={handleLoadMore} // Detecta cuándo llega al final de la lista
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading && page > 1 ? <Loading size={'small'} /> : null}
-        />
-        <Button title="Ver más" onPress={handleLoadMore} /> {/* Botón "Ver más" */}
-      </>
+      <FlatList
+        data={movies}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleMoviePress(item)}>
+            <MovieCard movie={item} />
+          </TouchableOpacity>
+        )}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isLoading && page > 1 ? <Loading size={'small'} /> : null}
+      />
     );
   };
 
