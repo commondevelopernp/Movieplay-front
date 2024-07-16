@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Text, Button } from 'react-native-paper'; // Asegúrate de importar Button de 'react-native-paper'
+import { Text, Button } from 'react-native-paper';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
@@ -36,13 +36,13 @@ const Home = ({ navigation }: Props) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const movieState = useSelector(selectMovieState);
-  const { query, genre, sort, order, pageSize } = movieState.searchParams;
+  const { query, genre, sort, order, pageSize, page } = movieState.searchParams;
   const { data, error, isLoading, refetch } = useGetMoviesQuery({
     genre,
     title: query,
     sort,
     order,
-    page: 1,
+    page,
     pageSize,
   });
 
@@ -56,24 +56,32 @@ const Home = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (data) {
-      setMovies(data);
+      if (page === 1) {
+        setMovies(data);
+      } else {
+        setMovies(prevMovies => [...prevMovies, ...data]);
+      }
     }
-  }, [data]);
+  }, [data, page]);
 
   useEffect(() => {
-    refetch({ page: 1 });
-  }, [query, genre, sort, order, pageSize, refetch]);
+    refetch();
+  }, [query, genre, sort, order, page, pageSize, refetch]);
 
   const handleMoviePress = (movie: IMovie) => {
     navigation.navigate('Movie', { movie });
   };
 
   const handleLoadMore = () => {
-    dispatch(setPageAction(movieState.searchParams.page + 1)); // Incrementar la página
+    dispatch(setPageAction(page + 1));
+  };
+
+  const shouldShowLoadMoreButton = () => {
+    return !isLoading && data && data.length === pageSize;
   };
 
   const renderContent = () => {
-    if (isLoading && movieState.searchParams.page === 1) {
+    if (isLoading && page === 1) {
       return (
         <View style={styles.loadingContainer}>
           <Loading size={'large'} />
@@ -107,24 +115,22 @@ const Home = ({ navigation }: Props) => {
               <MovieCard movie={item} />
             </TouchableOpacity>
           )}
+          onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={
-            isLoading && movieState.searchParams.page > 1 ? (
+            shouldShowLoadMoreButton() ? (
               <View style={styles.loadingMoreContainer}>
-                <Loading size={'small'} />
+                <Button
+                  mode="outlined"
+                  style={styles.loadMoreButton}
+                  onPress={handleLoadMore}
+                >
+                  {t('loadMore').toUpperCase()}
+                </Button>
               </View>
             ) : null
           }
         />
-        {isLoading || movies.length % pageSize !== 0 ? null : (
-          <Button
-            mode="outlined"
-            style={styles.loadMoreButton}
-            onPress={handleLoadMore}
-          >
-            {t('loadMore').toUpperCase()}
-          </Button>
-        )}
       </>
     );
   };
@@ -183,11 +189,10 @@ const styles = StyleSheet.create({
     marginBottom: 200,
   },
   loadingMoreContainer: {
-    paddingVertical: 20,
+    alignItems: 'center',
   },
   loadMoreButton: {
     marginVertical: 10,
-    alignSelf: 'center',
   },
 });
 
