@@ -32,7 +32,7 @@ const Home = ({ navigation }: Props) => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.jwt !== null);
   const { t } = useTranslation();
   const movieState = useSelector(selectMovieState);
-  const { query, genre, sort, order, pageSize } = movieState.searchParams;
+  const { query, genre, sort, order, pageSize, page } = movieState.searchParams; // Asegúrate de extraer 'page' del estado
   const { data, error, isLoading, refetch } = useGetMoviesQuery({
     genre,
     title: query,
@@ -52,7 +52,7 @@ const Home = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (data) {
-      setMovies(prevMovies => (page === 1 ? data : [...prevMovies, ...data]));
+      setMovies(prevMovies => (page === 1 ? data : [...prevMovies, ...data])); // Asegúrate de que 'page' esté definido y disponible aquí
     }
   }, [data, page]);
 
