@@ -34,7 +34,7 @@ const TabNavigator = () => {
       initialRouteName="HomeNavigator"
       sceneAnimationEnabled={true}
       activeColor={theme.colors.primary}
-      inactiveColor={theme.colors.disabled}
+      inactiveColor={theme.colors.disabled} // Set the color for the inactive tabs
       barStyle={{backgroundColor: theme.colors.tabBackground}}>
       <Tab.Screen
         name="HomeNavigator"

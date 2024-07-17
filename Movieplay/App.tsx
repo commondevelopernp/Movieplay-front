@@ -13,8 +13,6 @@ import NetInfo from '@react-native-community/netinfo';
 import ErrorScreen from './src/screens/ErrorHandling/ErrorHandling';
 import {configureGoogleSignIn} from './src/config/GoogleSignInConfig';
 import {firebase} from '@react-native-firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {jwtDecode} from 'jwt-decode';
 
 enableScreens();
 configureGoogleSignIn();
@@ -29,23 +27,12 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 } else {
-  firebase.app();
+  firebase.app(); // if already initialized, use that one
 }
 
 export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showError, setShowError] = useState(false);
-
-  const validateToken = (token: string): boolean => {
-    try {
-      const decoded: {exp: number} = jwtDecode(token);
-      return decoded.exp * 1000 > Date.now();
-    } catch (error) {
-      console.error('Invalid token:', error);
-      return false;
-    }
-  };
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
@@ -64,25 +51,6 @@ export default function App() {
       unsubscribe();
     };
   }, [isConnected]);
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem('jwt');
-        if (token && validateToken(token)) {
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-        }
-      } catch (error) {
-        console.log(isLoggedIn);
-        console.error('Failed to fetch the token from storage:', error);
-        setIsLoggedIn(false);
-      }
-    };
-    fetchToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Provider store={store}>
