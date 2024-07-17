@@ -42,7 +42,7 @@ const MovieScreen = ({ route }: Props) => {
   const toggleTrailer = () => {
     setShowTrailer(!showTrailer);
   };
-
+  console.log(movie)
   const videoId = getYouTubeVideoId(movie.trailer_video_url);
 
   return (
