@@ -22,10 +22,13 @@ import { RootState } from '../../store/store';
 import {
   useGetMoviesQuery,
 } from '../../store/slices/movie/movieApiSlice';
-import { setPage, selectMovieState } from '../../store/slices/movieSlice';
+import {
+  setPage as setPageAction,
+} from '../../store/slices/movie/movieSlice';
 import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
 import { RootStackNavigationParams } from '../../navigation/RootNavigation';
 import { genreElements } from '../../store/constants';
+import { selectMovieState } from '../../store/slices/movie/movieSlice';
 import { IMovie } from '../../store/types';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
@@ -73,7 +76,7 @@ const Home = ({ navigation }: Props) => {
   };
 
   const handleLoadMore = () => {
-    dispatch(setPage(page + 1));
+    dispatch(setPageAction(page + 1));
   };
 
   const shouldShowLoadMoreButton = () => {
