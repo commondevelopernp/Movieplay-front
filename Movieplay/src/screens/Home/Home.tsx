@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { StackScreenProps } from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {useTranslation} from 'react-i18next';
+import {StackScreenProps} from '@react-navigation/stack';
 import {
   FlatList,
   ScrollView,
@@ -9,37 +9,34 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Text, Button } from 'react-native-paper';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {Text, Button} from 'react-native-paper';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
 import GenreFilterButton from '../../components/GenreButton/GenreButton';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
-import { RootState } from '../../store/store';
-import {
-  useGetMoviesQuery,
-} from '../../store/slices/movie/movieApiSlice';
-import {
-  setPage as setPageAction,
-} from '../../store/slices/movie/movieSlice';
-import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
-import { RootStackNavigationParams } from '../../navigation/RootNavigation';
-import { genreElements } from '../../store/constants';
-import { selectMovieState } from '../../store/slices/movie/movieSlice';
-import { IMovie } from '../../store/types';
+import {RootState} from '../../store/store';
+import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
+import {setPage as setPageAction} from '../../store/slices/movie/movieSlice';
+import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
+import {RootStackNavigationParams} from '../../navigation/RootNavigation';
+import {genreElements} from '../../store/constants';
+import {selectMovieState} from '../../store/slices/movie/movieSlice';
+import {IMovie} from '../../store/types';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 
-const Home = ({ navigation }: Props) => {
-  const navigationObj = useNavigation<NavigationProp<RootStackNavigationParams>>();
+const Home = ({navigation}: Props) => {
+  const navigationObj =
+    useNavigation<NavigationProp<RootStackNavigationParams>>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.jwt !== null);
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const movieState = useSelector(selectMovieState);
-  const { query, genre, sort, order, pageSize, page } = movieState.searchParams;
-  const { data, error, isLoading, refetch } = useGetMoviesQuery({
+  const {query, genre, sort, order, pageSize, page} = movieState.searchParams;
+  const {data, error, isLoading, refetch} = useGetMoviesQuery({
     genre,
     title: query,
     sort,
@@ -66,14 +63,14 @@ const Home = ({ navigation }: Props) => {
         setMovies(Array.from(movieSet));
       }
     }
-  }, [data, page]);
+  }, [data, page]); //si se agrega movies tira Maximum update depth exceeded
 
   useEffect(() => {
     refetch();
   }, [query, genre, sort, order, page, pageSize, refetch]);
 
   const handleMoviePress = (movie: IMovie) => {
-    navigation.navigate('Movie', { movie });
+    navigation.navigate('Movie', {movie});
   };
 
   const handleLoadMore = () => {
@@ -114,7 +111,7 @@ const Home = ({ navigation }: Props) => {
         <FlatList
           data={movies}
           keyExtractor={(item, index) => `${item.id}-${index}`}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <TouchableOpacity onPress={() => handleMoviePress(item)}>
               <MovieCard movie={item} />
             </TouchableOpacity>
@@ -127,8 +124,7 @@ const Home = ({ navigation }: Props) => {
                 <Button
                   mode="outlined"
                   style={styles.loadMoreButton}
-                  onPress={handleLoadMore}
-                >
+                  onPress={handleLoadMore}>
                   {t('...').toUpperCase()}
                 </Button>
               </View>
