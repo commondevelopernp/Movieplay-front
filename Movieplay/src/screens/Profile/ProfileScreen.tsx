@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, Modal, Image} from 'react-native';
 import {styles} from './styles'; // Ajusta la ruta de importación según corresponda
-import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Modal, Image} from 'react-native';
-import {styles} from './styles'; // Ajusta la ruta de importación según corresponda
 import ProfileInput from './ProfileInput'; // Ajusta la ruta de importación según corresponda
 import {useTranslation} from 'react-i18next';
 import {
@@ -20,20 +17,15 @@ import {launchImageLibrary} from 'react-native-image-picker';
 const ProfileScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
-  const {t} = useTranslation();
-  const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
   const dispatch = useDispatch();
 
-  const {data} = useGetUserProfileQuery();
   const {data} = useGetUserProfileQuery();
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
 
   const [id, setUserId] = useState(-1);
   const [profileImage, setProfileImage] = useState<string | undefined>(
-    
     'https://via.placeholder.com/150',
-  ,
   );
   const [nickname, setNickname] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -46,9 +38,7 @@ const ProfileScreen = () => {
   useEffect(() => {
     if (data?.length) {
       setProfileImage(
-        
         data[0].profileImage ?? 'https://via.placeholder.com/150',
-      ,
       );
       setUserId(data[0].id);
       setNickname(data[0].nickname);
@@ -80,24 +70,21 @@ const ProfileScreen = () => {
   };
 
   const handleUpdateProfile = async imageUrl => {
-  const handleUpdateProfile = async imageUrl => {
     if (!validateFields()) return;
 
     try {
       await updateUserProfile({
-       
         id,
-       
+
         nickname,
-       
+
         firstName,
-       
+
         lastName,
-       
+
         email,
-       
+
         profileImage: imageUrl,
-     ,
       });
       setSuccessModalVisible(true);
     } catch (error) {
@@ -127,15 +114,13 @@ const ProfileScreen = () => {
 
   const handleSelectImage = async () => {
     const result = await launchImageLibrary({
-     
       mediaType: 'photo',
-     
+
       maxWidth: 150,
-     
+
       maxHeight: 150,
-     
+
       quality: 1,
-   ,
     });
     if (result.assets?.length) {
       const selectedImage = result.assets[0];
@@ -198,13 +183,11 @@ const ProfileScreen = () => {
         transparent
         animationType="slide"
         onRequestClose={() => setSuccessModalVisible(false)}>
-        onRequestClose={() => setSuccessModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>{t('profileUpdateSuccess')}</Text>
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={() => setSuccessModalVisible(false)}>
               onPress={() => setSuccessModalVisible(false)}>
               <Text style={styles.modalButtonText}>{t('ok')}</Text>
             </TouchableOpacity>
@@ -217,24 +200,19 @@ const ProfileScreen = () => {
         transparent
         animationType="slide"
         onRequestClose={() => setDeleteModalVisible(false)}>
-        onRequestClose={() => setDeleteModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>
-              
               {t('accountDeleteConfirmation')}
-            
             </Text>
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.deleteConfirmButton]}
                 onPress={confirmDeleteAccount}>
-                onPress={confirmDeleteAccount}>
                 <Text style={styles.modalButtonText}>{t('yes')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.deleteCancelButton]}
-                onPress={() => setDeleteModalVisible(false)}>
                 onPress={() => setDeleteModalVisible(false)}>
                 <Text style={styles.modalButtonText}>{t('no')}</Text>
               </TouchableOpacity>
