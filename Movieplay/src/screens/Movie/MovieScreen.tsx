@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, Button, Dimensions } from 'react-native';
-import YouTube from 'react-native-youtube-iframe';
+import YouTube, { YouTubeProps, YouTubeRef } from 'react-native-youtube-iframe'; // Asegúrate de importar las propiedades y el ref correctos
 import GenreLabel from './Components/GenreLabel';
 import RatingsAndActions from './Components/RatingsAndActions';
 import Synopsis from './Components/Synopsis';
@@ -25,7 +25,7 @@ const MovieScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const [showTrailer, setShowTrailer] = useState(false);
   const [orientation, setOrientation] = useState('portrait');
-  const [showPoster, setShowPoster] = useState(true); // Estado para controlar la visibilidad del poster
+  const youtubeRef = useRef<YouTubeRef>(null); // Ref para acceder al componente YouTube
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -42,7 +42,13 @@ const MovieScreen = ({ route }: Props) => {
 
   const toggleTrailer = () => {
     setShowTrailer(!showTrailer);
-    setShowPoster(!showTrailer); // Mostrar el poster si el trailer está oculto
+    if (youtubeRef.current) {
+      if (!showTrailer) {
+        youtubeRef.current?.setFullscreen(true); // Entrar en pantalla completa al reproducir el video
+      } else {
+        youtubeRef.current?.setFullscreen(false); // Salir de pantalla completa al ocultar el video
+      }
+    }
   };
 
   const videoId = getYouTubeVideoId(movie.trailerVideoUrl);
@@ -51,23 +57,26 @@ const MovieScreen = ({ route }: Props) => {
     <BackgroundImageWrapper>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.movieCard}>
-          {showPoster && ( // Mostrar el poster si showPoster es verdadero
-            <View style={styles.movieHeader}>
+          <View style={styles.movieHeader}>
+            {!showTrailer && (
               <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
-              <Button title={t('watchTrailer')} onPress={toggleTrailer} />
-            </View>
-          )}
+            )}
+            <Button
+              title={showTrailer ? t('showPhotos') : t('watchTrailer')}
+              onPress={toggleTrailer}
+            />
+          </View>
           {showTrailer && videoId && (
             <YouTube
+              ref={youtubeRef}
               videoId={videoId}
               height={orientation === 'portrait' ? 200 : Dimensions.get('window').height}
               play={true}
-              fullscreen={orientation === 'landscape'}
+              fullscreen={orientation === 'landscape'} // Iniciar en pantalla completa en modo paisaje
               onChangeFullscreen={(e) => {
                 if (!e.isFullscreen) {
                   setOrientation('portrait');
-                  setShowTrailer(false); // Ocultar el trailer al salir del modo pantalla completa
-                  setShowPoster(true); // Mostrar el poster al salir del modo pantalla completa
+                  setShowTrailer(false);
                 }
               }}
             />
@@ -146,8 +155,5 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
 });
-
-export default MovieScreen;
-
 
 export default MovieScreen;
