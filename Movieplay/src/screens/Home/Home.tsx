@@ -1,4 +1,3 @@
-// Home.tsx
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +61,9 @@ const Home = ({ navigation }: Props) => {
       if (page === 1) {
         setMovies(data);
       } else {
-        setMovies(prevMovies => [...prevMovies, ...data]);
+        // Usa un Set para evitar duplicados
+        const movieSet = new Set([...movies, ...data]);
+        setMovies(Array.from(movieSet));
       }
     }
   }, [data, page]);
@@ -112,7 +113,7 @@ const Home = ({ navigation }: Props) => {
       <>
         <FlatList
           data={movies}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleMoviePress(item)}>
               <MovieCard movie={item} />
