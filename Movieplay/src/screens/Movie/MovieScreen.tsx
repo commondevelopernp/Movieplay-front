@@ -44,7 +44,7 @@ const MovieScreen = ({ route }: Props) => {
   };
   console.log(movie)
   console.log(movie)
-  const videoId = getYouTubeVideoId(movie.trailer_video_url);
+  const videoId = getYouTubeVideoId(movie.trailerVideoUrl);
 
   return (
     <BackgroundImageWrapper>
