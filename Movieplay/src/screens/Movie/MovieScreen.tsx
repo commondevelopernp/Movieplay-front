@@ -25,6 +25,7 @@ const MovieScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const [showTrailer, setShowTrailer] = useState(false);
   const [orientation, setOrientation] = useState('portrait');
+  const [showPoster, setShowPoster] = useState(true); // Estado para controlar la visibilidad del poster
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -41,19 +42,21 @@ const MovieScreen = ({ route }: Props) => {
 
   const toggleTrailer = () => {
     setShowTrailer(!showTrailer);
+    setShowPoster(!showTrailer); // Mostrar el poster si el trailer está oculto
   };
-  console.log(movie)
-  console.log(movie)
+
   const videoId = getYouTubeVideoId(movie.trailerVideoUrl);
 
   return (
     <BackgroundImageWrapper>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.movieCard}>
-          <View style={styles.movieHeader}>
-            <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
-            <Button title={t('watchTrailer')} onPress={toggleTrailer} />
-          </View>
+          {showPoster && ( // Mostrar el poster si showPoster es verdadero
+            <View style={styles.movieHeader}>
+              <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
+              <Button title={t('watchTrailer')} onPress={toggleTrailer} />
+            </View>
+          )}
           {showTrailer && videoId && (
             <YouTube
               videoId={videoId}
@@ -63,6 +66,8 @@ const MovieScreen = ({ route }: Props) => {
               onChangeFullscreen={(e) => {
                 if (!e.isFullscreen) {
                   setOrientation('portrait');
+                  setShowTrailer(false); // Ocultar el trailer al salir del modo pantalla completa
+                  setShowPoster(true); // Mostrar el poster al salir del modo pantalla completa
                 }
               }}
             />
@@ -141,5 +146,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
 });
+
+export default MovieScreen;
+
 
 export default MovieScreen;
