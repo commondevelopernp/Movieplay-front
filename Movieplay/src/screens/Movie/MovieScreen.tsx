@@ -24,13 +24,13 @@ const MovieScreen = ({ route }: Props) => {
   const { movie } = route.params;
   const { t } = useTranslation();
   const [showTrailer, setShowTrailer] = useState(false);
-  const [orientation, setOrientation] = useState('portrait');
+  const [orientation, setOrientation] = useState('PORTRAIT');
   const youtubeRef = useRef<YouTubeRef>(null); // Ref para acceder al componente YouTube
 
   useEffect(() => {
     const handleOrientationChange = () => {
       const { width, height } = Dimensions.get('window');
-      setOrientation(width > height ? 'landscape' : 'portrait');
+      setOrientation(width > height ? 'LANDSCAPE' : 'PORTRAIT');
     };
 
     Dimensions.addEventListener('change', handleOrientationChange);
