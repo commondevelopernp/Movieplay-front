@@ -129,7 +129,7 @@ const Home = ({ navigation }: Props) => {
                   style={styles.loadMoreButton}
                   onPress={handleLoadMore}
                 >
-                  {t('loadMore').toUpperCase()}
+                  {t('...').toUpperCase()}
                 </Button>
               </View>
             ) : null
