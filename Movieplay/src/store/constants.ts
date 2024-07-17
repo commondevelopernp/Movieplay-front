@@ -6,14 +6,6 @@ export type SelectorOptions = {
 export const ratesOptions: string[] = ['--', '0', '1', '2', '3', '4', '5'];
 
 export const sortReleaseDateOptions: string[] = ['--', 'ASC', 'DESC'];
-export type SelectorOptions = {
-  value: string | number;
-  label: string;
-};
-
-export const ratesOptions: string[] = ['--', '0', '1', '2', '3', '4', '5'];
-
-export const sortReleaseDateOptions: string[] = ['--', 'ASC', 'DESC'];
 
 export const genreElements = [
   {value: 'Acción', labelKey: 'genre_action'},
