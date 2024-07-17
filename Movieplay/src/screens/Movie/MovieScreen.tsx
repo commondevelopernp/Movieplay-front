@@ -24,13 +24,13 @@ const MovieScreen = ({ route }: Props) => {
   const { movie } = route.params;
   const { t } = useTranslation();
   const [showTrailer, setShowTrailer] = useState(false);
-  const [orientation, setOrientation] = useState('PORTRAIT');
+  const [orientation, setOrientation] = useState('portrait');
   const youtubeRef = useRef<YouTubeRef>(null); // Ref para acceder al componente YouTube
 
   useEffect(() => {
     const handleOrientationChange = () => {
       const { width, height } = Dimensions.get('window');
-      setOrientation(width > height ? 'LANDSCAPE' : 'PORTRAIT');
+      setOrientation(width > height ? 'landscape' : 'portrait');
     };
 
     Dimensions.addEventListener('change', handleOrientationChange);
@@ -67,19 +67,22 @@ const MovieScreen = ({ route }: Props) => {
             />
           </View>
           {showTrailer && videoId && (
-            <YouTube
-              ref={youtubeRef}
-              videoId={videoId}
-              height={orientation === 'portrait' ? 200 : Dimensions.get('window').height}
-              play={true}
-              fullscreen={orientation === 'landscape'} // Iniciar en pantalla completa en modo paisaje
-              onChangeFullscreen={(e) => {
-                if (!e.isFullscreen) {
-                  setOrientation('portrait');
-                  setShowTrailer(false);
-                }
-              }}
-            />
+            <View style={styles.videoContainer}>
+              <YouTube
+                ref={youtubeRef}
+                videoId={videoId}
+                height={orientation === 'portrait' ? 200 : Dimensions.get('window').height}
+                play={true}
+                fullscreen={true} // Forzar el modo pantalla completa del componente YouTube
+                onChangeFullscreen={(e) => {
+                  if (!e.isFullscreen) {
+                    setOrientation('portrait');
+                    setShowTrailer(false);
+                  }
+                }}
+                style={StyleSheet.absoluteFillObject} // Ocupar todo el espacio disponible
+              />
+            </View>
           )}
           <View style={styles.movieDetails}>
             <Text style={styles.title}>{movie.title}</Text>
@@ -153,6 +156,10 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginTop: 15,
+  },
+  videoContainer: {
+    width: '100%',
+    height: Dimensions.get('window').height, // Asegurarse de que el contenedor del video ocupe toda la pantalla
   },
 });
 
