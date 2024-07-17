@@ -43,6 +43,7 @@ const MovieScreen = ({ route }: Props) => {
     setShowTrailer(!showTrailer);
   };
   console.log(movie)
+  console.log(movie)
   const videoId = getYouTubeVideoId(movie.trailer_video_url);
 
   return (
