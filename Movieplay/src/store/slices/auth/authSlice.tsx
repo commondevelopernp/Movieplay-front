@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {DataLoadStatus, IUser} from '../../types';
 import {RootState} from '../../store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface AuthState {
   jwt: string | null;
@@ -24,12 +25,16 @@ const authSlice = createSlice({
       state.jwt = null;
       state.user = null;
       state.refreshToken = null;
+      AsyncStorage.removeItem('jwt');
+      AsyncStorage.removeItem('refreshToken');
     },
     setRefreshToken(state, action: PayloadAction<string>) {
       state.refreshToken = action.payload;
+      AsyncStorage.setItem('refreshToken', action.payload);
     },
     setAccessToken(state, action: PayloadAction<string>) {
       state.jwt = action.payload;
+      AsyncStorage.setItem('jwt', action.payload);
     },
     setUser(state, action: PayloadAction<IUser>) {
       state.user = action.payload;
@@ -37,6 +42,9 @@ const authSlice = createSlice({
     clearUser(state) {
       state.user = null;
       state.jwt = null;
+      state.refreshToken = null;
+      AsyncStorage.removeItem('jwt');
+      AsyncStorage.removeItem('refreshToken');
     },
   },
 });
