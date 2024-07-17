@@ -1,3 +1,4 @@
+// Home.tsx
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -20,12 +21,11 @@ import Loading from '../../components/Loading/Loading';
 import { RootState } from '../../store/store';
 import {
   useGetMoviesQuery,
-  setPage as setPageAction,
 } from '../../store/slices/movie/movieApiSlice';
+import { setPage, selectMovieState } from '../../store/slices/movieSlice';
 import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
 import { RootStackNavigationParams } from '../../navigation/RootNavigation';
 import { genreElements } from '../../store/constants';
-import { selectMovieState } from '../../store/slices/movie/movieSlice';
 import { IMovie } from '../../store/types';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
@@ -73,7 +73,7 @@ const Home = ({ navigation }: Props) => {
   };
 
   const handleLoadMore = () => {
-    dispatch(setPageAction(page + 1));
+    dispatch(setPage(page + 1));
   };
 
   const shouldShowLoadMoreButton = () => {
