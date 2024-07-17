@@ -1,28 +1,73 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, Button, Dimensions } from 'react-native';
+import YouTube from 'react-native-youtube-iframe';
 import GenreLabel from './Components/GenreLabel';
 import RatingsAndActions from './Components/RatingsAndActions';
 import Synopsis from './Components/Synopsis';
 import TechnicalInfo from './Components/TechnicalInfo';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
-import {useTranslation} from 'react-i18next';
-import {StackScreenProps} from '@react-navigation/stack';
-import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
+import { useTranslation } from 'react-i18next';
+import { StackScreenProps } from '@react-navigation/stack';
+import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Movie'>;
 
-const MovieScreen = ({route}: Props) => {
-  const {movie} = route.params;
-  const {t} = useTranslation();
+const getYouTubeVideoId = (url) => {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?v=))([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[7].length === 11 ? match[7] : null;
+};
+
+const MovieScreen = ({ route }: Props) => {
+  const { movie } = route.params;
+  const { t } = useTranslation();
+  const [showTrailer, setShowTrailer] = useState(false);
+  const [orientation, setOrientation] = useState('portrait');
+
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      const { width, height } = Dimensions.get('window');
+      setOrientation(width > height ? 'landscape' : 'portrait');
+    };
+
+    Dimensions.addEventListener('change', handleOrientationChange);
+
+    return () => {
+      Dimensions.removeEventListener('change', handleOrientationChange);
+    };
+  }, []);
+
+  const toggleTrailer = () => {
+    setShowTrailer(!showTrailer);
+  };
+
+  const videoId = getYouTubeVideoId(movie.trailer_video_url);
+
   return (
     <BackgroundImageWrapper>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.movieCard}>
-          <Image style={styles.moviePoster} source={{uri: movie.images[0]}} />
+          <View style={styles.movieHeader}>
+            <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
+            <Button title={t('watchTrailer')} onPress={toggleTrailer} />
+          </View>
+          {showTrailer && videoId && (
+            <YouTube
+              videoId={videoId}
+              height={orientation === 'portrait' ? 200 : Dimensions.get('window').height}
+              play={true}
+              fullscreen={orientation === 'landscape'}
+              onChangeFullscreen={(e) => {
+                if (!e.isFullscreen) {
+                  setOrientation('portrait');
+                }
+              }}
+            />
+          )}
           <View style={styles.movieDetails}>
             <Text style={styles.title}>{movie.title}</Text>
             <GenreLabel genre={movie.genre.join(', ')} />
-            <RatingsAndActions rating={movie.rating} movieTitle={movie.title} movieSynopsis={movie.synopsis} /> 
+            <RatingsAndActions rating={movie.rating} movieTitle={movie.title} movieSynopsis={movie.synopsis} />
             <Image
               style={styles.imageBackground}
               source={require('../../assets/background-movie.png')}
@@ -68,8 +113,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
   },
+  movieHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   moviePoster: {
-    width: '100%',
+    width: '70%',
     height: 300,
   },
   movieDetails: {
@@ -82,9 +132,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 10,
   },
-  ratingsActionsContainer: {
-    marginVertical: 10,
-  },
   sectionTitle: {
     color: '#ffffff',
     fontWeight: 'bold',
@@ -93,3 +140,4 @@ const styles = StyleSheet.create({
 });
 
 export default MovieScreen;
+
