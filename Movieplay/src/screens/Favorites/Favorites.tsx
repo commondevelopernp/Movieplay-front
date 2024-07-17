@@ -17,12 +17,12 @@ import MovieCard from '../../components/MovieCard/MovieCard';
 import {IMovie} from '../../store/types';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/store';
-import {tabNavigatorParams} from '../../navigation/tabNavigator';
+import {TabNavigatorParams} from '../../navigation/tabNavigator';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
 
 type FavoritesNavigationProp = CompositeNavigationProp<
-  BottomTabScreenProps<tabNavigatorParams, 'Favorites'>['navigation'],
+  BottomTabScreenProps<TabNavigatorParams, 'Favorites'>['navigation'],
   StackNavigationProp<HomeStackNavigationParams>
 >;
 

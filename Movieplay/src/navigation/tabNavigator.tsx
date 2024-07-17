@@ -7,13 +7,13 @@ import {useTranslation} from 'react-i18next';
 import theme from '../themes/theme';
 import HomeStackNavigator from './HomeStackNavigator';
 
-export type tabNavigatorParams = {
+export type TabNavigatorParams = {
   HomeNavigator: undefined;
   Favorites: undefined;
   Profile: undefined;
 };
 
-const Tab = createMaterialBottomTabNavigator<tabNavigatorParams>();
+const Tab = createMaterialBottomTabNavigator<TabNavigatorParams>();
 
 const HomeIcon = ({color}: {color: string}) => (
   <MaterialCommunityIcons name="play-circle" color={color} size={26} />
@@ -34,7 +34,7 @@ const TabNavigator = () => {
       initialRouteName="HomeNavigator"
       sceneAnimationEnabled={true}
       activeColor={theme.colors.primary}
-      inactiveColor={theme.colors.disabled} // Set the color for the inactive tabs
+      inactiveColor={theme.colors.disabled}
       barStyle={{backgroundColor: theme.colors.tabBackground}}>
       <Tab.Screen
         name="HomeNavigator"
