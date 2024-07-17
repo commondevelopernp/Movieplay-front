@@ -17,7 +17,7 @@ import MovieCard from '../../components/MovieCard/MovieCard';
 import {IMovie} from '../../store/types';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../store/store';
-import {TabNavigatorParams} from '../../navigation/tabNavigator';
+import {TabNavigatorParams} from '../../navigation/TabNavigator';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
 

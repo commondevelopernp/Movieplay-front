@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Modal, Portal, Text} from 'react-native-paper';
+import {Modal, Portal, Text} from 'react-native-paper';
 import theme from '../../themes/theme';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useTranslation} from 'react-i18next';
@@ -68,15 +68,6 @@ const ErrorScreen = (props: ErrorScreenProps) => {
         <View style={styles.container}>
           {icon}
           <Text style={styles.text}>{text}</Text>
-          <View>
-            <Button
-              mode="contained"
-              onPress={hideModal}
-              uppercase
-              style={styles.button}>
-              {t('retry')}
-            </Button>
-          </View>
         </View>
       </Modal>
     </Portal>

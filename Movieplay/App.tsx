@@ -90,11 +90,13 @@ export default function App() {
         <SafeAreaProvider>
           <NavigationContainer>
             <RootStackNavigation />
-            <ErrorScreen
-              open={showError}
-              setVisible={setShowError}
-              errorType="internet"
-            />
+            {showError && (
+              <ErrorScreen
+                open={showError}
+                setVisible={setShowError}
+                errorType="internet"
+              />
+            )}
           </NavigationContainer>
         </SafeAreaProvider>
       </PaperProvider>
