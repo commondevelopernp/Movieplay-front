@@ -39,13 +39,13 @@ const ProfileScreen = () => {
   useEffect(() => {
     if (data?.length) {
       setProfileImage(
-        data[0].profileImage ?? 'https://via.placeholder.com/150',
+        data.profileImage ?? 'https://via.placeholder.com/150',
       );
-      setUserId(data[0].id);
-      setNickname(data[0].nickname);
-      setFirstName(data[0].firstName);
-      setLastName(data[0].lastName);
-      setEmail(data[0].email);
+      setUserId(data.id);
+      setNickname(data.nickname);
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setEmail(data.email);
     }
   }, [data]);
 
