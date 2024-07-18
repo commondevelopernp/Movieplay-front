@@ -1,28 +1,47 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import GenreLabel from './Components/GenreLabel';
 import RatingsAndActions from './Components/RatingsAndActions';
 import Synopsis from './Components/Synopsis';
 import TechnicalInfo from './Components/TechnicalInfo';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
-import {useTranslation} from 'react-i18next';
-import {StackScreenProps} from '@react-navigation/stack';
-import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
+import { useTranslation } from 'react-i18next';
+import { StackScreenProps } from '@react-navigation/stack';
+import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
+import { useGetUserProfileQuery } from '../../store/slices/user/userApiSlice';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Movie'>;
 
-const MovieScreen = ({route}: Props) => {
-  const {movie} = route.params;
-  const {t} = useTranslation();
+const MovieScreen = ({ route }: Props) => {
+  const { movie } = route.params;
+  const { t } = useTranslation();
+
+  const { data } = useGetUserProfileQuery();
+  const [userId, setUserId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setUserId(data[0].id);
+    }
+  }, [data]);
+
   return (
     <BackgroundImageWrapper>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.movieCard}>
-          <Image style={styles.moviePoster} source={{uri: movie.images[0]}} />
+          <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
           <View style={styles.movieDetails}>
             <Text style={styles.title}>{movie.title}</Text>
             <GenreLabel genre={movie.genre.join(', ')} />
-            <RatingsAndActions rating={movie.rating} movieTitle={movie.title} movieSynopsis={movie.synopsis} /> 
+            {userId !== null && (
+              <RatingsAndActions
+                movieId={movie.id}
+                rating={movie.rating}
+                movieTitle={movie.title}
+                movieSynopsis={movie.synopsis}
+                userId={userId}
+              />
+            )}
             <Image
               style={styles.imageBackground}
               source={require('../../assets/background-movie.png')}

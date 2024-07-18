@@ -4,31 +4,42 @@ import {Button} from 'react-native-paper';
 import theme from '../../themes/theme';
 import {useTranslation} from 'react-i18next';
 import {setGenre, setPage} from '../../store/slices/movie/movieSlice';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
+import {RootState} from '../../store/store';
 
 type GenreFilterButtonProps = {
   value: string;
   label: string;
+  onFilterStart: () => void;
 };
 
 const GenreFilterButton = (props: GenreFilterButtonProps) => {
-  const {value, label} = props;
+  const {value, label, onFilterStart} = props;
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const {refetch} = useGetMoviesQuery({});
+  
+  const currentGenre = useSelector((state: RootState) => state.movie.searchParams.genre);
 
   const handlePress = () => {
-    dispatch(setGenre(value));
-    dispatch(setPage(1)); // Reset to first page
-    refetch(); // Trigger the API request with new genre
+    onFilterStart(); // Notify parent component that filtering is starting
+    const newGenre = currentGenre === value ? '' : value;
+    dispatch(setGenre(newGenre));
+    dispatch(setPage(1));
+    refetch();
   };
+
+  const isActive = currentGenre === value;
 
   return (
     <Button
       mode="outlined"
-      style={styles.button}
-      textColor={theme.colors.text}
+      style={[
+        styles.button,
+        isActive && styles.activeButton
+      ]}
+      textColor={isActive ? theme.colors.background : theme.colors.text}
       uppercase
       onPress={handlePress}>
       {t(label)}
@@ -38,9 +49,11 @@ const GenreFilterButton = (props: GenreFilterButtonProps) => {
 
 const styles = StyleSheet.create({
   button: {
-    //marginTop: 200,
     borderColor: theme.colors.primary,
     margin: 5,
+  },
+  activeButton: {
+    backgroundColor: theme.colors.primary,
   },
 });
 
