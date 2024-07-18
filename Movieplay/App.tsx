@@ -36,7 +36,7 @@ export default function App() {
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showError, setShowError] = useState(false);
-
+  const [userClaims, setUserClaims] = useState<any>(null); // Estado para almacenar las claims del usuario
   const validateToken = (token: string): boolean => {
     try {
       const decoded: {exp: number} = jwtDecode(token);
@@ -70,7 +70,9 @@ export default function App() {
       try {
         const token = await AsyncStorage.getItem('jwt');
         if (token && validateToken(token)) {
+          const decodedToken = jwtDecode(token); // Decodificar el token JWT
           setIsLoggedIn(true);
+          setUserClaims(decodedToken); // Almacenar las claims del usuario en el estado
         } else {
           setIsLoggedIn(false);
         }
