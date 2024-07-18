@@ -59,5 +59,20 @@
   "lastNameRequired": "El apellido es obligatorio",
   "validEmailRequired": "Se requiere un email válido",
   "updateFailed": "Fallo al actualizar el perfil",
-  "deleteFailed": "Fallo al eliminar la cuenta"
+  "deleteFailed": "Fallo al eliminar la cuenta",
+  "order_none": "--",
+  "order_asc": "Ascendente",
+  "order_desc": "Descendente",
+  "rate_none": "--",
+  "rate_1": "1",
+  "rate_0": "0",
+  "rate_2": "2",
+  "rate_3": "3",
+  "rate_4": "4",
+  "rate_5": "5",
+  "apply-filter": "Aplicar Filtros",
+  "order": "Orden",
+  "sortBy": "Ordenar por",
+  "title": "Titulo",
+  "actor": "Actor"
 }

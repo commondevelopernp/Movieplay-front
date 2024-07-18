@@ -1,63 +1,68 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Searchbar, List, Button, Text} from 'react-native-paper';
 import theme from '../../themes/theme';
 import {useTranslation} from 'react-i18next';
 import {SearchRightIcon} from '../../components/MovieSearch/MovieSearchBar';
-import {ratesOptions, sortReleaseDateOptions} from '../../store/constants';
+import {
+  orderElements,
+  ratesElements,
+  sortByElements,
+} from '../../store/constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   setSearchQuery,
   setRate,
-  setReleaseDateSort,
   setPage,
+  setOrder,
+  setSort,
 } from '../../store/slices/movie/movieSlice';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {RootState} from '../../store/store';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 const MovieSearch = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {query, rate, releaseDateSort} = useSelector(
+  const {query, rate, order, sort} = useSelector(
     (state: RootState) => state.movie.searchParams,
   );
-  const [localQuery, setLocalQuery] = useState(query);
-  const [localRate, setLocalRate] = useState(rate);
-  const [localReleaseDateSort, setLocalReleaseDateSort] = useState(releaseDateSort);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      setLocalQuery(query);
-    }, [query])
-  );
+  const [expanded3, setExpanded3] = useState(false);
 
   const onChangeSearch = (newQuery: string) => {
-    setLocalQuery(newQuery);
+    dispatch(setSearchQuery(newQuery));
   };
 
   const handleSelectOption1 = (option: string) => {
-    setLocalRate(option);
+    dispatch(
+      setRate(ratesElements.find(e => e.labelKey === option)?.value ?? ''),
+    );
     setExpanded1(false);
   };
 
   const handleSelectOption2 = (option: string) => {
-    setLocalReleaseDateSort(option);
+    dispatch(
+      setOrder(orderElements.find(e => e.labelKey === option)?.value ?? ''),
+    );
+    setExpanded2(false);
+  };
+
+  const handleSelectOption3 = (option: string) => {
+    dispatch(
+      setSort(sortByElements.find(e => e.labelKey === option)?.value ?? ''),
+    );
     setExpanded2(false);
   };
 
   const handleSearch = () => {
-    dispatch(setSearchQuery(localQuery));
-    dispatch(setRate(localRate));
-    dispatch(setReleaseDateSort(localReleaseDateSort));
     dispatch(setPage(1)); // Reset to first page
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: 'Home' }],
-      })
+        routes: [{name: 'Home'}],
+      }),
     );
   };
 
@@ -70,43 +75,59 @@ const MovieSearch = () => {
         placeholder={t('searchMovie')}
         placeholderTextColor={theme.colors.text}
         onChangeText={onChangeSearch}
-        value={localQuery}
+        value={query}
         icon={() => null}
         right={SearchRightIcon}
         style={styles.searchbar}
         inputStyle={styles.input}
-        onSubmitEditing={onSubmitSearch} 
-        returnKeyType="search" 
+        onSubmitEditing={onSubmitSearch}
+        returnKeyType="search"
       />
       <List.Section>
         <Text style={styles.label}>{t('rate')}</Text>
         <List.Accordion
-          title={localRate}
+          title={t(ratesElements.find(e => e.value === rate)?.labelKey ?? '')}
           expanded={expanded1}
           onPress={() => setExpanded1(!expanded1)}
           titleStyle={styles.accordionTitle}
           style={styles.accordion}>
-          {ratesOptions.map(opt => (
+          {ratesElements.map(opt => (
             <List.Item
-              key={opt}
-              title={opt}
-              onPress={() => handleSelectOption1(opt)}
+              key={opt.value}
+              title={t(opt.labelKey)}
+              onPress={() => handleSelectOption1(opt.labelKey)}
+              titleStyle={styles.listItem}
+            />
+          ))}
+        </List.Accordion>
+        <Text style={styles.label}>{t('sortBy')}</Text>
+        <List.Accordion
+          title={t(sortByElements.find(e => e.value === sort)?.labelKey ?? '')}
+          expanded={expanded3}
+          onPress={() => setExpanded3(!expanded3)}
+          titleStyle={styles.accordionTitle}
+          style={styles.accordion}>
+          {sortByElements.map(opt => (
+            <List.Item
+              key={opt.value}
+              title={t(opt.labelKey)}
+              onPress={() => handleSelectOption3(opt.labelKey)}
               titleStyle={styles.listItem}
             />
           ))}
         </List.Accordion>
         <Text style={styles.label}>{t('releaseDateSort')}</Text>
         <List.Accordion
-          title={localReleaseDateSort}
+          title={t(orderElements.find(e => e.value === order)?.labelKey ?? '')}
           expanded={expanded2}
           onPress={() => setExpanded2(!expanded2)}
           titleStyle={styles.accordionTitle}
           style={styles.accordion}>
-          {sortReleaseDateOptions.map(opt => (
+          {orderElements.map(opt => (
             <List.Item
-              key={opt}
-              title={t(opt)}
-              onPress={() => handleSelectOption2(opt)}
+              key={opt.value}
+              title={t(opt.labelKey)}
+              onPress={() => handleSelectOption2(opt.labelKey)}
               titleStyle={styles.listItem}
             />
           ))}

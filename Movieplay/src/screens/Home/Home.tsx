@@ -10,7 +10,12 @@ import {
   View,
 } from 'react-native';
 import {Text, Button} from 'react-native-paper';
-import {NavigationProp, useNavigation, useFocusEffect} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useNavigation,
+  useFocusEffect,
+  CommonActions,
+} from '@react-navigation/native';
 
 import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
@@ -19,7 +24,13 @@ import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
 import {RootState} from '../../store/store';
 import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
-import {setPage as setPageAction} from '../../store/slices/movie/movieSlice';
+import {
+  setPage,
+  setPage as setPageAction,
+  setRate,
+  setReleaseDateSort,
+  setSearchQuery,
+} from '../../store/slices/movie/movieSlice';
 import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import {RootStackNavigationParams} from '../../navigation/RootNavigation';
 import {genreElements} from '../../store/constants';
@@ -29,13 +40,14 @@ import {IMovie} from '../../store/types';
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 
 const Home = ({navigation}: Props) => {
-  const navigationObj = useNavigation<NavigationProp<RootStackNavigationParams>>();
+  const navigationObj =
+    useNavigation<NavigationProp<RootStackNavigationParams>>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.jwt !== null);
   const dispatch = useDispatch();
   const {t} = useTranslation();
   const movieState = useSelector(selectMovieState);
   const {query, genre, sort, order, pageSize, page} = movieState.searchParams;
-  const {data, error, isLoading, refetch} = useGetMoviesQuery({
+  const {data, error, isLoading} = useGetMoviesQuery({
     genre,
     title: query,
     sort,
@@ -78,12 +90,15 @@ const Home = ({navigation}: Props) => {
   useFocusEffect(
     useCallback(() => {
       setLocalQuery('');
-    }, [])
+    }, []),
   );
 
-  const handleMoviePress = useCallback((movie: IMovie) => {
-    navigation.navigate('Movie', {movie});
-  }, [navigation]);
+  const handleMoviePress = useCallback(
+    (movie: IMovie) => {
+      navigation.navigate('Movie', {movie});
+    },
+    [navigation],
+  );
 
   const handleLoadMore = useCallback(() => {
     if (!isLoading) {
@@ -91,23 +106,26 @@ const Home = ({navigation}: Props) => {
     }
   }, [dispatch, isLoading, page]);
 
-  const renderMovieItem = useCallback(({item}: {item: IMovie}) => (
-    <TouchableOpacity onPress={() => handleMoviePress(item)}>
-      <MovieCard movie={item} />
-    </TouchableOpacity>
-  ), [handleMoviePress]);
+  const renderMovieItem = useCallback(
+    ({item}: {item: IMovie}) => (
+      <TouchableOpacity onPress={() => handleMoviePress(item)}>
+        <MovieCard movie={item} />
+      </TouchableOpacity>
+    ),
+    [handleMoviePress],
+  );
 
   const keyExtractor = useCallback((item: IMovie) => item.id.toString(), []);
 
   const handleFilterStart = useCallback(() => {
     setIsFiltering(true);
   }, []);
-  const handleSearch = (query) => {
+  const handleSearch = query => {
     dispatch(setSearchQuery(query));
     dispatch(setRate(localRate));
     dispatch(setReleaseDateSort(localReleaseDateSort));
     dispatch(setPage(1));
-  
+
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -116,7 +134,13 @@ const Home = ({navigation}: Props) => {
     );
   };
   const renderContent = () => {
-    if (isInitialLoading || (isLoading && searchResults.length === 0 && previousResults.length === 0) || isFiltering) {
+    if (
+      isInitialLoading ||
+      (isLoading &&
+        searchResults.length === 0 &&
+        previousResults.length === 0) ||
+      isFiltering
+    ) {
       return (
         <View style={styles.loadingContainer}>
           <Loading size={'large'} />
@@ -132,7 +156,11 @@ const Home = ({navigation}: Props) => {
       );
     }
 
-    if (!isLoading && searchResults.length === 0 && previousResults.length === 0) {
+    if (
+      !isLoading &&
+      searchResults.length === 0 &&
+      previousResults.length === 0
+    ) {
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.text}>{t('noResults')}</Text>
@@ -163,7 +191,7 @@ const Home = ({navigation}: Props) => {
       <View style={styles.container}>
         <View style={styles.topContainer}>
           <View style={styles.searchBarContainer}>
-            <MovieSearchBar 
+            <MovieSearchBar
               resetQuery={() => setLocalQuery('')}
               onSubmitSearch={() => handleSearch(localQuery)}
             />
