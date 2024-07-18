@@ -14,6 +14,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { TabNavigatorParams } from '../../navigation/TabNavigator';
 import { clearUser } from '../../store/slices/auth/authSlice';
 import { launchImageLibrary } from 'react-native-image-picker';
+import {RootState} from '../../store/store';
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
