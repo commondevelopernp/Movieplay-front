@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Button, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Button,TouchableOpacity, useWindowDimensions } from 'react-native';
 import YouTube from 'react-native-youtube-iframe';
+
 import GenreLabel from './Components/GenreLabel';
 import RatingsAndActions from './Components/RatingsAndActions';
 import Synopsis from './Components/Synopsis';
@@ -9,6 +11,8 @@ import BackgroundImageWrapper from '../../components/backgroundWrapper/Backgroun
 import { useTranslation } from 'react-i18next';
 import { StackScreenProps } from '@react-navigation/stack';
 import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
+import { useGetUserProfileQuery } from '../../store/slices/user/userApiSlice';
+
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Movie'>;
 
@@ -27,17 +31,25 @@ const MovieScreen = ({ route }: Props) => {
   const { width, height } = useWindowDimensions();
   const orientation = width > height ? 'landscape' : 'portrait';
   const youtubeRef = useRef<any>(null); // Uso 'any' para evitar problemas de tipo con useRef
-
+  const { data } = useGetUserProfileQuery();
+  const [userId, setUserId] = useState<number | null>(null);
   const toggleTrailer = () => {
     setShowTrailer(!showTrailer);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setUserId(data[0].id);
+    }
+  }, [data]);
   };
 
   const videoId = getYouTubeVideoId(movie.trailerVideoUrl);
+
 
   return (
     <BackgroundImageWrapper>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.movieCard}>
+
           <View style={styles.movieHeader}>
             {!showTrailer && (
               <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
@@ -69,6 +81,18 @@ const MovieScreen = ({ route }: Props) => {
             <Text style={styles.title}>{movie.title}</Text>
             <GenreLabel genre={movie.genre.join(', ')} />
             <RatingsAndActions rating={movie.rating} movieTitle={movie.title} movieSynopsis={movie.synopsis} />
+
+
+            {userId !== null && (
+              <RatingsAndActions
+                movieId={movie.id}
+                rating={movie.rating}
+                movieTitle={movie.title}
+                movieSynopsis={movie.synopsis}
+                userId={userId}
+              />
+            )}
+
             <Image
               style={styles.imageBackground}
               source={require('../../assets/background-movie.png')}

@@ -15,17 +15,18 @@ export const SearchRightIcon = () => (
 
 type NavigationProp = StackNavigationProp<HomeStackNavigationParams, 'Home'>;
 
-const MovieSearchBar = () => {
+const MovieSearchBar = ({resetQuery, ...props}) => {
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp>();
   const movieQueryStr = useSelector(
     (state: RootState) => state.movie.searchParams.query,
   );
 
-  // const onChangeSearch = (query: string) => {
-  //   //dispatch(setSearchQuery(query));
-  //   navigation.navigate('Search'); // Redirect to the search screen
-  // };
+  const handleReset = () => {
+    if (resetQuery) {
+      resetQuery();
+    }
+  };
 
   return (
     <View>
@@ -35,7 +36,6 @@ const MovieSearchBar = () => {
           placeholderTextColor={theme.colors.text}
           value={movieQueryStr}
           editable={false}
-          //onChangeText={onChangeSearch}
           icon={() => null}
           right={SearchRightIcon}
           style={styles.searchbar}

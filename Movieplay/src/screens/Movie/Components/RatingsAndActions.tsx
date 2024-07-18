@@ -1,19 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, Share, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useUpdateUserProfileMutation, useGetUserProfileQuery } from '../../../store/slices/user/userApiSlice';
 
-const RatingsAndActions: React.FC<{rating: number, movieTitle: string, movieSynopsis: string}> = ({ rating, movieTitle, movieSynopsis }) => {
+interface RatingsAndActionsProps {
+  userId: number;
+  movieId: number;
+  rating: number;
+  movieTitle: string;
+  movieSynopsis: string;
+}
+
+const RatingsAndActions: React.FC<RatingsAndActionsProps> = ({
+  userId,
+  movieId,
+  rating,
+  movieTitle,
+  movieSynopsis
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRating, setSelectedRating] = useState(rating);
   const [isRated, setIsRated] = useState(false);
+  
+  const { data: userProfile, refetch } = useGetUserProfileQuery();
+  const [updateUserProfile] = useUpdateUserProfileMutation();
+
+  useEffect(() => {
+    if (userProfile && userProfile.length > 0 && userProfile[0].ratings) {
+      setIsRated(userProfile[0].ratings.includes(movieId));
+    }
+  }, [userProfile, movieId]);
 
   const handleRating = (rate: number) => {
     setSelectedRating(rate);
   };
 
-  const handleSubmitRating = () => {
-    setIsRated(true);
-    setModalVisible(false);
+  const handleSubmitRating = async () => {
+    if (isRated) {
+      Alert.alert("Ya calificado", "Ya has calificado esta película.");
+      return;
+    }
+
+    if (!userId || !userProfile || userProfile.length === 0) {
+      Alert.alert("Error", "No se pudo obtener el perfil del usuario.");
+      return;
+    }
+
+    const user = userProfile[0];
+    const updatedRatings = [...user.ratings, movieId];
+
+    try {
+      await updateUserProfile({
+        id: userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        nickname: user.nickname,
+        email: user.email,
+        profileImage: user.profileImage,
+        ratings: updatedRatings,
+        favorited: user.favorited
+      }).unwrap();
+      setIsRated(true);
+      setModalVisible(false);
+      Alert.alert('Éxito', 'Tu calificación ha sido guardada.');
+      refetch();
+    } catch (error) {
+      console.error('Error al calificar:', error);
+      Alert.alert('Error', 'No se pudo guardar la calificación. Por favor, intenta de nuevo.');
+    }
+  };
+
+  const openRatingModal = () => {
+    if (isRated) {
+      Alert.alert("Ya calificado", "Ya has calificado esta película.");
+    } else {
+      setModalVisible(true);
+    }
   };
 
   const onShare = async () => {
@@ -24,18 +86,15 @@ const RatingsAndActions: React.FC<{rating: number, movieTitle: string, movieSyno
 
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          // Compartido con una actividad específica
           console.log(result.activityType);
         } else {
-          // Compartido
           Alert.alert('Compartido exitosamente');
         }
       } else if (result.action === Share.dismissedAction) {
-        // Dismissed
         Alert.alert('Compartido cancelado');
       }
     } catch (error) {
-      //Alert.alert('Error al compartir:', error.message);
+      console.error('Error al compartir:', error);
     }
   };
 
@@ -44,7 +103,7 @@ const RatingsAndActions: React.FC<{rating: number, movieTitle: string, movieSyno
       <TouchableOpacity style={styles.button}>
         <Icon name="heart" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+      <TouchableOpacity style={styles.button} onPress={openRatingModal}>
         <Icon name="star" size={24} color="white" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={onShare}>

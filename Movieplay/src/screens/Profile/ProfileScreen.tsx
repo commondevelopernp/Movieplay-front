@@ -13,13 +13,14 @@ import {TabNavigatorParams} from '../../navigation/TabNavigator';
 import {useDispatch} from 'react-redux';
 import {clearUser} from '../../store/slices/auth/authSlice';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {resetSearchParams} from '../../store/slices/movie/movieSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {jwtDecode} from 'jwt-decode';
 
 const ProfileScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
   const dispatch = useDispatch();
-
-  const {data} = useGetUserProfileQuery();
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
 
@@ -35,16 +36,29 @@ const ProfileScreen = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [error, setError] = useState('');
 
+  const {data} = useGetUserProfileQuery({id});
+
   useEffect(() => {
-    if (data?.length) {
-      setProfileImage(
-        data[0].profileImage ?? 'https://via.placeholder.com/150',
-      );
-      setUserId(data[0].id);
-      setNickname(data[0].nickname);
-      setFirstName(data[0].firstName);
-      setLastName(data[0].lastName);
-      setEmail(data[0].email);
+    const fetchToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('jwt');
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.id);
+      } catch (error) {
+        console.error('Failed to fetch the token from storage:', error);
+      }
+    };
+    fetchToken();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setProfileImage(data.profileImage ?? 'https://via.placeholder.com/150');
+      setUserId(data.id);
+      setNickname(data.nickname);
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setEmail(data.email);
     }
   }, [data]);
 
@@ -102,6 +116,7 @@ const ProfileScreen = () => {
   };
 
   const handleLogout = () => {
+    dispatch(resetSearchParams());
     dispatch(clearUser());
     navigation.navigate('HomeNavigator');
   };
@@ -117,10 +132,7 @@ const ProfileScreen = () => {
       const selectedImage = result.assets[0];
       const imageUri = selectedImage.uri;
 
-      // Here, we assume imageUri is already a URL you want to save in your database.
       setProfileImage(imageUri);
-
-      // Now update the user profile with the new image URL
       await handleUpdateProfile(imageUri);
     }
   };

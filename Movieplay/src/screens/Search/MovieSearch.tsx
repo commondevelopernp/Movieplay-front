@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Searchbar, List, Button, Text} from 'react-native-paper';
 import theme from '../../themes/theme';
@@ -12,9 +12,9 @@ import {
   setReleaseDateSort,
   setPage,
 } from '../../store/slices/movie/movieSlice';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {RootState} from '../../store/store';
-
+import { CommonActions } from '@react-navigation/native';
 const MovieSearch = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
@@ -24,10 +24,15 @@ const MovieSearch = () => {
   );
   const [localQuery, setLocalQuery] = useState(query);
   const [localRate, setLocalRate] = useState(rate);
-  const [localReleaseDateSort, setLocalReleaseDateSort] =
-    useState(releaseDateSort);
+  const [localReleaseDateSort, setLocalReleaseDateSort] = useState(releaseDateSort);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setLocalQuery(query);
+    }, [query])
+  );
 
   const onChangeSearch = (newQuery: string) => {
     setLocalQuery(newQuery);
@@ -48,9 +53,17 @@ const MovieSearch = () => {
     dispatch(setRate(localRate));
     dispatch(setReleaseDateSort(localReleaseDateSort));
     dispatch(setPage(1)); // Reset to first page
-    navigation.goBack();
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      })
+    );
   };
 
+  const onSubmitSearch = () => {
+    handleSearch();
+  };
   return (
     <View style={styles.container}>
       <Searchbar
@@ -62,6 +75,8 @@ const MovieSearch = () => {
         right={SearchRightIcon}
         style={styles.searchbar}
         inputStyle={styles.input}
+        onSubmitEditing={onSubmitSearch} 
+        returnKeyType="search" 
       />
       <List.Section>
         <Text style={styles.label}>{t('rate')}</Text>
