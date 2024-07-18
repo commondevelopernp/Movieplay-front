@@ -3,11 +3,13 @@ import {apiSlice} from '../api/apiSlice';
 
 type UpdateProfileRequest = {
   id: number;
-  nickname?: string;
   firstName?: string;
   lastName?: string;
+  nickname?: string;
   email?: string;
   profileImage?: string;
+  ratings: number[];
+  favorited?: number[];
 };
 
 export const userApiSlice = apiSlice.injectEndpoints({

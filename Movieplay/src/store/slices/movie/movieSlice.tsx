@@ -1,7 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../../store';
 import {DataLoadStatus, IMovie} from '../../types';
-
 interface MovieState {
   movies: IMovie[];
   total: number;
@@ -95,6 +94,9 @@ const movieSlice = createSlice({
     setReleaseDateSort(state, action: PayloadAction<string>) {
       state.searchParams.releaseDateSort = action.payload;
     },
+    resetSearchParams(state) {
+      state.searchParams = {...initialState.searchParams};
+    },
   },
 });
 
@@ -112,6 +114,7 @@ export const {
   setPageSize,
   setRate,
   setReleaseDateSort,
+  resetSearchParams,
 } = movieSlice.actions;
 
 export default movieSlice.reducer;

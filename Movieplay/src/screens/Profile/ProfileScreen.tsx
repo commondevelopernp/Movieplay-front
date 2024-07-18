@@ -1,26 +1,26 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import {View, Text, TouchableOpacity, Modal, Image}  from 'react-native';
-import { styles } from './styles';
-import ProfileInput from './ProfileInput';
-import { useTranslation } from 'react-i18next';
+import React, {useEffect, useState} from 'react';
+import {View, Text, TouchableOpacity, Modal, Image} from 'react-native';
+import {styles} from './styles'; // Ajusta la ruta de importación según corresponda
+import ProfileInput from './ProfileInput'; // Ajusta la ruta de importación según corresponda
+import {useTranslation} from 'react-i18next';
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
   useDeleteUserMutation,
 } from '../../store/slices/user/userApiSlice';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { TabNavigatorParams } from '../../navigation/TabNavigator';
-import { useDispatch } from 'react-redux';
-import { clearUser } from '../../store/slices/auth/authSlice';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {TabNavigatorParams} from '../../navigation/TabNavigator';
+import {useDispatch} from 'react-redux';
+import {clearUser} from '../../store/slices/auth/authSlice';
+import {launchImageLibrary} from 'react-native-image-picker';
+import { resetSearchParams } from '../../store/slices/movie/movieSlice';
 
 const ProfileScreen = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
   const dispatch = useDispatch();
 
-  const { data } = useGetUserProfileQuery();
+  const {data} = useGetUserProfileQuery();
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
 
@@ -70,7 +70,7 @@ const ProfileScreen = () => {
     return true;
   };
 
-  const handleUpdateProfile = async (imageUrl = profileImage) => {
+  const handleUpdateProfile = async imageUrl => {
     if (!validateFields()) return;
 
     try {
@@ -94,7 +94,7 @@ const ProfileScreen = () => {
 
   const confirmDeleteAccount = async () => {
     try {
-      await deleteUser({ id });
+      await deleteUser({id});
       setDeleteModalVisible(false);
       handleLogout();
     } catch (error) {
@@ -103,6 +103,7 @@ const ProfileScreen = () => {
   };
 
   const handleLogout = () => {
+    dispatch(resetSearchParams());
     dispatch(clearUser());
     navigation.navigate('HomeNavigator');
   };
@@ -110,56 +111,26 @@ const ProfileScreen = () => {
   const handleSelectImage = async () => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
-      maxWidth: 300,
-      maxHeight: 300,
+      maxWidth: 150,
+      maxHeight: 150,
       quality: 1,
     });
     if (result.assets?.length) {
       const selectedImage = result.assets[0];
       const imageUri = selectedImage.uri;
 
-      try {
-        // Subir la imagen a Cloudinary
-        const formData = new FormData();
-        formData.append('file', {
-          uri: imageUri,
-          type: 'image/jpeg', // o el tipo de archivo adecuado
-          name: 'profile_image.jpg',
-        });
-        formData.append('upload_preset', 'image_profile');
+      // Here, we assume imageUri is already a URL you want to save in your database.
+      setProfileImage(imageUri);
 
-        const cloudinaryResponse = await axios.post(
-          'https://api.cloudinary.com/v1_1/djbgvh1qh/image/upload',
-          formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          },
-        );
-
-        if (cloudinaryResponse.data.secure_url) {
-          // Actualizar el estado local con la URL de Cloudinary
-          setProfileImage(cloudinaryResponse.data.secure_url);
-
-          // Actualizar el perfil del usuario con la nueva URL de la imagen
-          await handleUpdateProfile(cloudinaryResponse.data.secure_url);
-        } else {
-          setError(t('imageUploadFailed'));
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.error('Axios error:', error.message);
-        } else {
-          console.error('Unexpected error:', error);
-        }
-        setError(t('imageUploadFailed'));
-      }
+      // Now update the user profile with the new image URL
+      await handleUpdateProfile(imageUri);
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profilePictureContainer}>
-        <Image style={styles.profilePicture} source={{ uri: profileImage }} />
+        <Image style={styles.profilePicture} source={{uri: profileImage}} />
         <TouchableOpacity onPress={handleSelectImage}>
           <Text style={styles.text}>{t('Change Profile Picture')}</Text>
         </TouchableOpacity>
@@ -189,7 +160,7 @@ const ProfileScreen = () => {
         onChangeText={setEmail}
         placeholder={t('email')}
       />
-      <TouchableOpacity style={styles.blueButton} onPress={() => handleUpdateProfile()}>
+      <TouchableOpacity style={styles.blueButton} onPress={handleUpdateProfile}>
         <Text style={styles.buttonText}>{t('updateProfile')}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.blueButton} onPress={handleLogout}>
