@@ -14,7 +14,6 @@ import {
   useGetUserProfileQuery,
 } from '../../../store/slices/user/userApiSlice';
 import {jwtDecode} from 'jwt-decode';
-import {setUserId} from '../../../store/slices/user/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface RatingsAndActionsProps {
@@ -35,14 +34,10 @@ const RatingsAndActions: React.FC<RatingsAndActionsProps> = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRating, setSelectedRating] = useState(rating);
   const [isRated, setIsRated] = useState(false);
-<<<<<<< Updated upstream
-  
-  const { data: userProfile, refetch } = useGetUserProfileQuery(1);
-=======
->>>>>>> Stashed changes
-  const [updateUserProfile] = useUpdateUserProfileMutation();
+
   const [id, setUserId] = useState(-1);
   const {data} = useGetUserProfileQuery({id});
+  const [updateUserProfile] = useUpdateUserProfileMutation();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -256,3 +251,15 @@ const styles = StyleSheet.create({
 });
 
 export default RatingsAndActions;
+function updateUserProfile(arg0: {
+  id: number;
+  firstName: string;
+  lastName: string;
+  nickname: string;
+  email: string;
+  profileImage: string | undefined;
+  ratings: number[];
+  favorited: number[];
+}) {
+  throw new Error('Function not implemented.');
+}
