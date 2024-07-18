@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Keyboard} from 'react-native';
 import {Searchbar, List, Button, Text} from 'react-native-paper';
 import theme from '../../themes/theme';
 import {useTranslation} from 'react-i18next';
@@ -57,6 +57,7 @@ const MovieSearch = () => {
         placeholder={t('searchMovie')}
         placeholderTextColor={theme.colors.text}
         onChangeText={onChangeSearch}
+        onBlur={() => Keyboard.dismiss()}
         value={localQuery}
         icon={() => null}
         right={SearchRightIcon}
