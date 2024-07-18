@@ -21,7 +21,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
     }),
     getUserProfile: builder.query<IUser[], {id: number}>({
       query: () => ({
-        url: '/api/users/${id}',
+        url: `/api/users/${id}`,
         method: 'GET',
       }),
       providesTags: ['User'],
