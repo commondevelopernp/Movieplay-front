@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Button, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Button, useWindowDimensions } from 'react-native';
 import YouTube from 'react-native-youtube-iframe';
 import GenreLabel from './Components/GenreLabel';
 import RatingsAndActions from './Components/RatingsAndActions';
@@ -24,21 +24,9 @@ const MovieScreen = ({ route }: Props) => {
   const { movie } = route.params;
   const { t } = useTranslation();
   const [showTrailer, setShowTrailer] = useState(false);
-  const [orientation, setOrientation] = useState('portrait');
+  const { width, height } = useWindowDimensions();
+  const orientation = width > height ? 'landscape' : 'portrait';
   const youtubeRef = useRef<any>(null); // Uso 'any' para evitar problemas de tipo con useRef
-
-  useEffect(() => {
-    const handleOrientationChange = () => {
-      const { width, height } = Dimensions.get('window');
-      setOrientation(width > height ? 'landscape' : 'portrait');
-    };
-
-    Dimensions.addEventListener('change', handleOrientationChange);
-
-    return () => {
-      Dimensions.remove('change', handleOrientationChange); // Asegúrate de que Dimensions sea importado desde 'react-native'
-    };
-  }, []);
 
   const toggleTrailer = () => {
     setShowTrailer(!showTrailer);
@@ -54,14 +42,13 @@ const MovieScreen = ({ route }: Props) => {
             {!showTrailer && (
               <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
             )}
-
           </View>
           {showTrailer && videoId && (
             <View style={[styles.videoContainer, orientation === 'landscape' && styles.videoLandscape]}>
               <YouTube
                 ref={youtubeRef}
                 videoId={videoId}
-                height={orientation === 'portrait' ? 200 : Dimensions.get('window').height}
+                height={orientation === 'portrait' ? 200 : height}
                 play={true}
                 controls={true}
                 fullscreen={showTrailer}
