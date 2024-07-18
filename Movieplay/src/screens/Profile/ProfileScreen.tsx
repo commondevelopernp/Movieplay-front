@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {View, Text, TouchableOpacity, Modal, Image}  from 'react-native';
 import { styles } from './styles';
 import ProfileInput from './ProfileInput';
