@@ -22,7 +22,7 @@ const RatingsAndActions: React.FC<RatingsAndActionsProps> = ({
   const [selectedRating, setSelectedRating] = useState(rating);
   const [isRated, setIsRated] = useState(false);
   
-  const { data: userProfile, refetch } = useGetUserProfileQuery();
+  const { data: userProfile, refetch } = useGetUserProfileQuery(1);
   const [updateUserProfile] = useUpdateUserProfileMutation();
 
   useEffect(() => {
