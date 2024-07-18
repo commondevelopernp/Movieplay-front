@@ -19,11 +19,13 @@ import MovieCard from '../../components/MovieCard/MovieCard';
 import Loading from '../../components/Loading/Loading';
 import {RootState} from '../../store/store';
 import {useGetMoviesQuery} from '../../store/slices/movie/movieApiSlice';
-import {setPage as setPageAction} from '../../store/slices/movie/movieSlice';
+import {
+  selectMovieState,
+  setPage as setPageAction,
+} from '../../store/slices/movie/movieSlice';
 import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import {RootStackNavigationParams} from '../../navigation/RootNavigation';
 import {genreElements} from '../../store/constants';
-import {selectMovieState} from '../../store/slices/movie/movieSlice';
 import {IMovie} from '../../store/types';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
@@ -35,11 +37,12 @@ const Home = ({navigation}: Props) => {
   const dispatch = useDispatch();
   const {t} = useTranslation();
   const movieState = useSelector(selectMovieState);
-  const {query, genre, sort, order, pageSize, page} = movieState.searchParams;
+  const {query, genre, order, sort, rate, pageSize, page} =
+    movieState.searchParams;
+  console.log('movieState.searchParams', movieState.searchParams);
   const {data, error, isLoading, refetch} = useGetMoviesQuery({
     genre,
     title: query,
-    sort,
     order,
     page,
     pageSize,
@@ -55,6 +58,7 @@ const Home = ({navigation}: Props) => {
 
   useEffect(() => {
     if (data) {
+      console.log(data[0]);
       if (page === 1) {
         setMovies(data);
       } else {
@@ -64,11 +68,11 @@ const Home = ({navigation}: Props) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, page]); //si se agrega movies tira Maximum update depth exceeded
+  }, [data, page, movieState.searchParams]);
 
   useEffect(() => {
     refetch();
-  }, [query, genre, sort, order, page, pageSize, refetch]);
+  }, [query, genre, order, rate, sort, page, pageSize, refetch]);
 
   const handleMoviePress = (movie: IMovie) => {
     navigation.navigate('Movie', {movie});
@@ -92,6 +96,7 @@ const Home = ({navigation}: Props) => {
     }
 
     if (error) {
+      console.log(error);
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.text}>{t('error')}</Text>

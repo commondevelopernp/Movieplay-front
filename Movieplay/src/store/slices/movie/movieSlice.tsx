@@ -106,12 +106,11 @@ export const {
   setSearchParams,
   setSearchQuery,
   setGenre,
-  setSort,
   setOrder,
+  setSort,
   setPage,
   setPageSize,
   setRate,
-  setReleaseDateSort,
 } = movieSlice.actions;
 
 export default movieSlice.reducer;

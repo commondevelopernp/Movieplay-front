@@ -22,7 +22,11 @@ const MovieScreen = ({route}: Props) => {
           <View style={styles.movieDetails}>
             <Text style={styles.title}>{movie.title}</Text>
             <GenreLabel genre={movie.genre.join(', ')} />
-            <RatingsAndActions rating={movie.rating} movieTitle={movie.title} movieSynopsis={movie.synopsis} /> 
+            <RatingsAndActions
+              rating={movie.rating}
+              movieTitle={movie.title}
+              movieSynopsis={movie.synopsis}
+            />
             <Image
               style={styles.imageBackground}
               source={require('../../assets/background-movie.png')}

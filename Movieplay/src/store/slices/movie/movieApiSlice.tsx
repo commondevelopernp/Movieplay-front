@@ -8,16 +8,17 @@ export const movieApiSlice = apiSlice.injectEndpoints({
       {
         genre?: string;
         title?: string;
+        rate?: string;
         sort?: string;
         order?: string;
         page?: number;
         pageSize?: number;
       }
     >({
-      query: ({genre, title, sort, order, page, pageSize}) => ({
+      query: ({genre, title, rate, sort, order, page, pageSize}) => ({
         url: '/api/movies',
         method: 'GET',
-        params: {genre, title, sort, order, page, pageSize},
+        params: {genre, title, rate, sort, order, page, pageSize},
       }),
       providesTags: ['Movie'],
     }),
