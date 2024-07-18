@@ -19,8 +19,12 @@ const ProfileScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
   const dispatch = useDispatch();
-  const iduser = useSelector((state: RootState) => state.user.id);
+
+  const iduser = useSelector((state: RootState) => state.user);
+  console.log(iduser)
+  console.log(iduser.id)
   const { data } = useGetUserProfileQuery({id: iduser});
+  console.log(data)
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
 
