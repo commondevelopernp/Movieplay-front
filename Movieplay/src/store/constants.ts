@@ -3,9 +3,21 @@ export type SelectorOptions = {
   label: string;
 };
 
-export const ratesOptions: string[] = ['--', '0', '1', '2', '3', '4', '5'];
+export const ratesElements = [
+  {value: 'None', labelKey: 'rate_none'},
+  {value: '0', labelKey: 'rate_0'},
+  {value: '1', labelKey: 'rate_1'},
+  {value: '2', labelKey: 'rate_2'},
+  {value: '3', labelKey: 'rate_3'},
+  {value: '4', labelKey: 'rate_4'},
+  {value: '5', labelKey: 'rate_5'},
+];
 
-export const sortReleaseDateOptions: string[] = ['--', 'ASC', 'DESC'];
+export const orderElements = [
+  {value: 'None', labelKey: 'order_none'},
+  {value: 'ASC', labelKey: 'order_asc'},
+  {value: 'DESC', labelKey: 'order_desc'},
+];
 
 export const genreElements = [
   {value: 'Acción', labelKey: 'genre_action'},
@@ -27,4 +39,10 @@ export const genreElements = [
   {value: 'Suspense', labelKey: 'genre_suspense'},
   {value: 'Bélica', labelKey: 'genre_war'},
   {value: 'Western', labelKey: 'genre_western'},
+];
+
+export const sortByElements = [
+  {value: 'title', labelKey: 'title'},
+  {value: 'genre', labelKey: 'genre'},
+  {value: 'actor', labelKey: 'actor'},
 ];

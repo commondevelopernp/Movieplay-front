@@ -59,5 +59,19 @@
   "lastNameRequired": "Last name is required",
   "validEmailRequired": "A valid email is required",
   "updateFailed": "Failed to update profile",
-  "deleteFailed": "Failed to delete account"
+  "deleteFailed": "Failed to delete account",
+  "order_none": "--",
+  "order_asc": "Ascending",
+  "order_desc": "Descending",
+  "rate_none": "--",
+  "rate_1": "1",
+  "rate_2": "2",
+  "rate_3": "3",
+  "rate_4": "4",
+  "rate_5": "5",
+  "apply-filter": "Apply Filters",
+  "sort": "Order",
+  "sortBy": "Sort by",
+  "title": "Title",
+  "actor": "Actor"
 }
