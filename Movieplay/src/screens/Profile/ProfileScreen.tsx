@@ -20,12 +20,6 @@ const ProfileScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
   const dispatch = useDispatch();
-  const token = await AsyncStorage.getItem('jwt');
-  console.log(token)
-  const decodedToken = jwtDecode(token); 
-  console.log(decodedToken)
-  console.log(decodedToken.id)
-  const {data} = useGetUserProfileQuery(decodedToken.id);
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
 
@@ -42,6 +36,12 @@ const ProfileScreen = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    const token = await AsyncStorage.getItem('jwt');
+    console.log(token)
+    const decodedToken = jwtDecode(token); 
+    console.log(decodedToken)
+    console.log(decodedToken.id)
+    const {data} = useGetUserProfileQuery(decodedToken.id);
     if (data?.length) {
       setProfileImage(
         data.profileImage ?? 'https://via.placeholder.com/150',
