@@ -40,6 +40,9 @@ useEffect(() => {
       const token = await AsyncStorage.getItem('jwt');
       if (token && validateToken(token)) {
         const decodedToken = jwtDecode(token);
+        console.log(token);
+        console.log(decodedToken);
+         const {data} = useGetUserProfileQuery(decodedToken.id);
         
       } else {
         console.log("Token invalido");
