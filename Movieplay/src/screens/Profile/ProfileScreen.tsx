@@ -16,6 +16,7 @@ import { clearUser } from '../../store/slices/auth/authSlice';
 import { launchImageLibrary } from 'react-native-image-picker';
 import {RootState} from '../../store/store';
 import {jwtDecode} from 'jwt-decode';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
