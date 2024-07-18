@@ -13,9 +13,9 @@ import {TabNavigatorParams} from '../../navigation/TabNavigator';
 import {useDispatch} from 'react-redux';
 import {clearUser} from '../../store/slices/auth/authSlice';
 import {launchImageLibrary} from 'react-native-image-picker';
-import { resetSearchParams } from '../../store/slices/movie/movieSlice';
+import {resetSearchParams} from '../../store/slices/movie/movieSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 const ProfileScreen = () => {
   const {t} = useTranslation();
@@ -25,7 +25,9 @@ const ProfileScreen = () => {
   const [deleteUser] = useDeleteUserMutation();
 
   const [id, setUserId] = useState(-1);
-  const [profileImage, setProfileImage] = useState<string | undefined>('https://via.placeholder.com/150');
+  const [profileImage, setProfileImage] = useState<string | undefined>(
+    'https://via.placeholder.com/150',
+  );
   const [nickname, setNickname] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -34,23 +36,20 @@ const ProfileScreen = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [error, setError] = useState('');
 
-  const [token, setToken] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchToken = async () => {
       try {
         const token = await AsyncStorage.getItem('jwt');
-        setToken(token);
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.id);
       } catch (error) {
         console.error('Failed to fetch the token from storage:', error);
       }
     };
-
     fetchToken();
   }, []);
 
-  const decodedToken = token ? jwtDecode(token) : null;
-  const { data } = useGetUserProfileQuery(decodedToken ? decodedToken.id : -1, { skip: !decodedToken });
+  const {data} = useGetUserProfileQuery(id);
 
   useEffect(() => {
     if (data) {
@@ -84,7 +83,7 @@ const ProfileScreen = () => {
     return true;
   };
 
-  const handleUpdateProfile = async (imageUrl) => {
+  const handleUpdateProfile = async imageUrl => {
     if (!validateFields()) return;
 
     try {
@@ -108,7 +107,7 @@ const ProfileScreen = () => {
 
   const confirmDeleteAccount = async () => {
     try {
-      await deleteUser({ id });
+      await deleteUser({id});
       setDeleteModalVisible(false);
       handleLogout();
     } catch (error) {
@@ -141,7 +140,7 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.profilePictureContainer}>
-        <Image style={styles.profilePicture} source={{ uri: profileImage }} />
+        <Image style={styles.profilePicture} source={{uri: profileImage}} />
         <TouchableOpacity onPress={handleSelectImage}>
           <Text style={styles.text}>{t('Change Profile Picture')}</Text>
         </TouchableOpacity>
@@ -185,15 +184,13 @@ const ProfileScreen = () => {
         visible={successModalVisible}
         transparent
         animationType="slide"
-        onRequestClose={() => setSuccessModalVisible(false)}
-      >
+        onRequestClose={() => setSuccessModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>{t('profileUpdateSuccess')}</Text>
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={() => setSuccessModalVisible(false)}
-            >
+              onPress={() => setSuccessModalVisible(false)}>
               <Text style={styles.modalButtonText}>{t('ok')}</Text>
             </TouchableOpacity>
           </View>
@@ -204,22 +201,21 @@ const ProfileScreen = () => {
         visible={deleteModalVisible}
         transparent
         animationType="slide"
-        onRequestClose={() => setDeleteModalVisible(false)}
-      >
+        onRequestClose={() => setDeleteModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{t('accountDeleteConfirmation')}</Text>
+            <Text style={styles.modalText}>
+              {t('accountDeleteConfirmation')}
+            </Text>
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.deleteConfirmButton]}
-                onPress={confirmDeleteAccount}
-              >
+                onPress={confirmDeleteAccount}>
                 <Text style={styles.modalButtonText}>{t('yes')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.deleteCancelButton]}
-                onPress={() => setDeleteModalVisible(false)}
-              >
+                onPress={() => setDeleteModalVisible(false)}>
                 <Text style={styles.modalButtonText}>{t('no')}</Text>
               </TouchableOpacity>
             </View>
