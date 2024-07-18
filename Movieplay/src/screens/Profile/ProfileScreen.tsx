@@ -12,7 +12,6 @@ import {
 } from '../../store/slices/user/userApiSlice';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { TabNavigatorParams } from '../../navigation/TabNavigator';
-import { useDispatch } from 'react-redux';
 import { clearUser } from '../../store/slices/auth/authSlice';
 import { launchImageLibrary } from 'react-native-image-picker';
 
