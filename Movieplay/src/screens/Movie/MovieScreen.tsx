@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, Button, Dimensions } from 'react-native';
-import YouTube, { YouTubeProps, YouTubeRef } from 'react-native-youtube-iframe'; // Asegúrate de importar las propiedades y el ref correctos
+import YouTube from 'react-native-youtube-iframe';
 import GenreLabel from './Components/GenreLabel';
 import RatingsAndActions from './Components/RatingsAndActions';
 import Synopsis from './Components/Synopsis';
@@ -25,7 +25,7 @@ const MovieScreen = ({ route }: Props) => {
   const { t } = useTranslation();
   const [showTrailer, setShowTrailer] = useState(false);
   const [orientation, setOrientation] = useState('portrait');
-  const youtubeRef = useRef<YouTubeRef>(null); // Ref para acceder al componente YouTube
+  const youtubeRef = useRef<any>(null); // Uso 'any' para evitar problemas de tipo con useRef
 
   useEffect(() => {
     const handleOrientationChange = () => {
@@ -36,19 +36,12 @@ const MovieScreen = ({ route }: Props) => {
     Dimensions.addEventListener('change', handleOrientationChange);
 
     return () => {
-      Dimensions.removeEventListener('change', handleOrientationChange);
+      Dimensions.remove('change', handleOrientationChange); // Asegúrate de que Dimensions sea importado desde 'react-native'
     };
   }, []);
 
   const toggleTrailer = () => {
     setShowTrailer(!showTrailer);
-    if (youtubeRef.current) {
-      if (!showTrailer) {
-        youtubeRef.current?.setFullscreen(true); // Entrar en pantalla completa al reproducir el video
-      } else {
-        youtubeRef.current?.setFullscreen(false); // Salir de pantalla completa al ocultar el video
-      }
-    }
   };
 
   const videoId = getYouTubeVideoId(movie.trailerVideoUrl);
@@ -61,29 +54,30 @@ const MovieScreen = ({ route }: Props) => {
             {!showTrailer && (
               <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
             )}
-            <Button
-              title={showTrailer ? t('showPhotos') : t('watchTrailer')}
-              onPress={toggleTrailer}
-            />
+
           </View>
           {showTrailer && videoId && (
-            <View style={styles.videoContainer}>
+            <View style={[styles.videoContainer, orientation === 'landscape' && styles.videoLandscape]}>
               <YouTube
                 ref={youtubeRef}
                 videoId={videoId}
                 height={orientation === 'portrait' ? 200 : Dimensions.get('window').height}
                 play={true}
-                fullscreen={true} // Forzar el modo pantalla completa del componente YouTube
-                onChangeFullscreen={(e) => {
+                controls={true}
+                fullscreen={showTrailer}
+                onChangeFullscreen={(e: { isFullscreen: boolean }) => {
                   if (!e.isFullscreen) {
-                    setOrientation('portrait');
                     setShowTrailer(false);
                   }
                 }}
-                style={StyleSheet.absoluteFillObject} // Ocupar todo el espacio disponible
+                style={StyleSheet.absoluteFillObject}
               />
             </View>
           )}
+          <Button
+            title={showTrailer ? t('showPhotos') : t('watchTrailer')}
+            onPress={toggleTrailer}
+          />
           <View style={styles.movieDetails}>
             <Text style={styles.title}>{movie.title}</Text>
             <GenreLabel genre={movie.genre.join(', ')} />
@@ -105,16 +99,6 @@ const MovieScreen = ({ route }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  imageBackground: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: '100%',
-    height: '80%',
-    marginBottom: '-10%',
-    marginLeft: '-15%',
-    opacity: 0.7,
-  },
   container: {
     flexGrow: 1,
     justifyContent: 'flex-start',
@@ -142,6 +126,14 @@ const styles = StyleSheet.create({
     width: '70%',
     height: 300,
   },
+  videoContainer: {
+    width: '100%',
+    height: '30%',
+    zIndex: 9999999999999999999999999999999,
+  },
+  videoLandscape: {
+    marginTop: -100, // Aplicar margen superior negativo solo en orientación horizontal
+  },
   movieDetails: {
     padding: 15,
     flex: 1,
@@ -157,9 +149,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 15,
   },
-  videoContainer: {
+  imageBackground: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
     width: '100%',
-    height: Dimensions.get('window').height, // Asegurarse de que el contenedor del video ocupe toda la pantalla
+    height: '80%',
+    marginBottom: '-10%',
+    marginLeft: '-15%',
+    opacity: 0.7,
   },
 });
 
