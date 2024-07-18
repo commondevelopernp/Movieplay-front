@@ -63,6 +63,7 @@ const Home = ({navigation}: Props) => {
         setMovies(Array.from(movieSet));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, page]); //si se agrega movies tira Maximum update depth exceeded
 
   useEffect(() => {
@@ -107,31 +108,29 @@ const Home = ({navigation}: Props) => {
     }
 
     return (
-      <>
-        <FlatList
-          data={movies}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          renderItem={({item}) => (
-            <TouchableOpacity onPress={() => handleMoviePress(item)}>
-              <MovieCard movie={item} />
-            </TouchableOpacity>
-          )}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            shouldShowLoadMoreButton() ? (
-              <View style={styles.loadingMoreContainer}>
-                <Button
-                  mode="outlined"
-                  style={styles.loadMoreButton}
-                  onPress={handleLoadMore}>
-                  {t('...').toUpperCase()}
-                </Button>
-              </View>
-            ) : null
-          }
-        />
-      </>
+      <FlatList
+        data={movies}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        renderItem={({item}) => (
+          <TouchableOpacity onPress={() => handleMoviePress(item)}>
+            <MovieCard movie={item} />
+          </TouchableOpacity>
+        )}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          shouldShowLoadMoreButton() ? (
+            <View style={styles.loadingMoreContainer}>
+              <Button
+                mode="outlined"
+                style={styles.loadMoreButton}
+                onPress={handleLoadMore}>
+                {t('...').toUpperCase()}
+              </Button>
+            </View>
+          ) : null
+        }
+      />
     );
   };
 
