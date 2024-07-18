@@ -34,7 +34,6 @@ const ProfileScreen = () => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [error, setError] = useState('');
-useEffect(() => {
   const fetchToken = async () => {
     try {
       const token = await AsyncStorage.getItem('jwt');
@@ -52,9 +51,6 @@ useEffect(() => {
     }
   };
 
-  fetchToken();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
   useEffect(() => {
     
     if (data?.length) {
