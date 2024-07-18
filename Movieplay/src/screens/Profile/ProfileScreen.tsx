@@ -14,13 +14,18 @@ import {useDispatch} from 'react-redux';
 import {clearUser} from '../../store/slices/auth/authSlice';
 import {launchImageLibrary} from 'react-native-image-picker';
 import { resetSearchParams } from '../../store/slices/movie/movieSlice';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {jwtDecode} from 'jwt-decode';
 const ProfileScreen = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
   const dispatch = useDispatch();
-
-  const {data} = useGetUserProfileQuery();
+  const token = await AsyncStorage.getItem('jwt');
+  console.log(token)
+  const decodedToken = jwtDecode(token); 
+  console.log(decodedToken)
+  console.log(decodedToken.id)
+  const {data} = useGetUserProfileQuery(decodedToken.id);
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
 
@@ -39,13 +44,13 @@ const ProfileScreen = () => {
   useEffect(() => {
     if (data?.length) {
       setProfileImage(
-        data[0].profileImage ?? 'https://via.placeholder.com/150',
+        data.profileImage ?? 'https://via.placeholder.com/150',
       );
-      setUserId(data[0].id);
-      setNickname(data[0].nickname);
-      setFirstName(data[0].firstName);
-      setLastName(data[0].lastName);
-      setEmail(data[0].email);
+      setUserId(data.id);
+      setNickname(data.nickname);
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setEmail(data.email);
     }
   }, [data]);
 
