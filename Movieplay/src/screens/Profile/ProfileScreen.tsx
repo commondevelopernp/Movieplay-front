@@ -36,6 +36,8 @@ const ProfileScreen = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [error, setError] = useState('');
 
+  const {data} = useGetUserProfileQuery({id});
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -48,8 +50,6 @@ const ProfileScreen = () => {
     };
     fetchToken();
   }, []);
-
-  const {data} = useGetUserProfileQuery(id);
 
   useEffect(() => {
     if (data) {
