@@ -34,14 +34,26 @@ const ProfileScreen = () => {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [error, setError] = useState('');
+useEffect(() => {
+  const fetchToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('jwt');
+      if (token && validateToken(token)) {
+        const decodedToken = jwtDecode(token);
+        
+      } else {
+        console.log("Token invalido");
+      }
+    } catch (error) {
+      console.error('Failed to fetch the token from storage:', error);
+    }
+  };
 
+  fetchToken();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
   useEffect(() => {
-    const token = await AsyncStorage.getItem('jwt');
-    console.log(token)
-    const decodedToken = jwtDecode(token); 
-    console.log(decodedToken)
-    console.log(decodedToken.id)
-    const {data} = useGetUserProfileQuery(decodedToken.id);
+    
     if (data?.length) {
       setProfileImage(
         data.profileImage ?? 'https://via.placeholder.com/150',
