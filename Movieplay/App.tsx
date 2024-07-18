@@ -73,7 +73,7 @@ export default function App() {
           const decodedToken = jwtDecode(token); // Decodificar el token JWT
           setIsLoggedIn(true);
           setUserClaims(decodedToken); // Almacenar las claims del usuario en el estado
-          console.log(decodedToken);
+          store.user=decodedToken;
         } else {
           setIsLoggedIn(false);
         }
