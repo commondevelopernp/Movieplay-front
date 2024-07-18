@@ -19,9 +19,9 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['User'],
     }),
-    getUserProfile: builder.query<IUser[], void>({
+    getUserProfile: builder.query<IUser[], {id: number}>({
       query: () => ({
-        url: '/api/users',
+        url: '/api/users/${id}',
         method: 'GET',
       }),
       providesTags: ['User'],
