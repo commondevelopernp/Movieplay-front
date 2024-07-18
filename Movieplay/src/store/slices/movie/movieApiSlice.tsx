@@ -31,7 +31,7 @@ export const movieApiSlice = apiSlice.injectEndpoints({
     }),
     addFavoriteMovie: builder.mutation<void, {id: string}>({
       query: ({id}) => ({
-        url: `/api/movies/${id}/favorites`,
+        url: `/api/movies/favorites/${id}`,
         method: 'POST',
       }),
       invalidatesTags: ['Movie'],

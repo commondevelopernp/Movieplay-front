@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import MovieSearchBar from '../../components/MovieSearch/MovieSearchBar';
 import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import {StackNavigationProp, StackScreenProps} from '@react-navigation/stack';
@@ -20,6 +20,9 @@ import {RootState} from '../../store/store';
 import {TabNavigatorParams} from '../../navigation/TabNavigator';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {jwtDecode} from 'jwt-decode';
+import {useAddFavoriteMovieMutation} from '../../store/slices/movie/movieApiSlice';
 
 type FavoritesNavigationProp = CompositeNavigationProp<
   BottomTabScreenProps<TabNavigatorParams, 'Favorites'>['navigation'],
@@ -37,6 +40,26 @@ const Favorites = ({navigation}: Props) => {
 
   //const {data, error, isLoading} = useGetMoviesQuery({}); //Prepare queries to be used.
   const moviesFromState = useSelector((state: RootState) => state.movie.movies);
+  const [id, setUserId] = useState(-1);
+  const {data} = useAddFavoriteMovieMutation({id});
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('jwt');
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.id);
+      } catch (error) {
+        console.error('Failed to fetch the token from storage:', error);
+      }
+    };
+    fetchToken();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+    }
+  }, [data]);
 
   return (
     <BackgroundImageWrapper>
@@ -61,7 +84,7 @@ const Favorites = ({navigation}: Props) => {
             </ScrollView>
           </View>
           <FlatList
-            data={moviesFromState}
+            data={data}
             renderItem={({item}) => (
               <TouchableOpacity onPress={() => handleMoviePress(item)}>
                 <MovieCard movie={item} />
