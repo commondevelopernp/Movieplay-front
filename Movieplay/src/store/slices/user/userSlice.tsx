@@ -6,12 +6,14 @@ interface UserState {
   user: IUser | null;
   status: DataLoadStatus;
   error: string | null;
+  userId?:number;
 }
 
 const initialState: UserState = {
   user: null,
   status: DataLoadStatus.NOT_REQUESTED_YET,
   error: null,
+  userId:undefined,
 };
 
 const userSlice = createSlice({
@@ -39,10 +41,13 @@ const userSlice = createSlice({
     setLoading(state) {
       state.status = DataLoadStatus.LOADING;
     },
+    setUserId(state,action:PayloadAction<number>){
+        state.user.userId=action.payload;
+        },
   },
 });
 
-export const {setUser, updateUser, clearUser, setError, setLoading} =
+export const {setUser, updateUser, clearUser, setError, setLoading,setUserId} =
   userSlice.actions;
 
 export default userSlice.reducer;

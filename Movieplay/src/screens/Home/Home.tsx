@@ -36,6 +36,9 @@ import {RootStackNavigationParams} from '../../navigation/RootNavigation';
 import {genreElements} from '../../store/constants';
 import {selectMovieState} from '../../store/slices/movie/movieSlice';
 import {IMovie} from '../../store/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {jwtDecode} from 'jwt-decode';
+import { setUserId } from '../../store/slices/user/userSlice';
 
 type Props = StackScreenProps<HomeStackNavigationParams, 'Home'>;
 
@@ -61,11 +64,26 @@ const Home = ({navigation}: Props) => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [localQuery, setLocalQuery] = useState('');
 
+
   useEffect(() => {
     if (!isLoggedIn) {
       navigationObj.navigate('Login');
     }
   }, [isLoggedIn, navigationObj]);
+/*useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('jwt');
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken)
+        if (decodedToken.id){
+            dispatch(setUserId(decodedToken.id));}
+      } catch (error) {
+        console.error('Failed to fetch the token from storage:', error);
+      }
+    };
+    fetchToken();
+  }, [isLoggedIn]);*/
 
   useEffect(() => {
     if (data) {
