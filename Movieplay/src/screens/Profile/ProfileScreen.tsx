@@ -21,11 +21,13 @@ const ProfileScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp<TabNavigatorParams>>();
   const dispatch = useDispatch();
-
-  const iduser = useSelector((state: RootState) => state.user);
-  console.log(iduser)
-  console.log(iduser.id)
-  const { data } = useGetUserProfileQuery({id: iduser});
+  const token = await AsyncStorage.getItem('jwt');
+  const decodedToken = jwtDecode(token); 
+  //const iduser = useSelector((state: RootState) => state.user);
+  console.log(token)
+  console.log(decodedToken)
+  console.log(decodedToken.id)
+  const { data } = useGetUserProfileQuery({id: decodedToken.id});
   console.log(data)
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [deleteUser] = useDeleteUserMutation();
