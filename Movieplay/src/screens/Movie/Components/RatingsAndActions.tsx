@@ -15,6 +15,8 @@ import {
 } from '../../../store/slices/user/userApiSlice';
 import {jwtDecode} from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {useAddFavoriteMovieMutation} from '../../../store/slices/movie/movieApiSlice';
 
 interface RatingsAndActionsProps {
   userId: number;
@@ -38,6 +40,7 @@ const RatingsAndActions: React.FC<RatingsAndActionsProps> = ({
   const [id, setUserId] = useState(-1);
   const {data} = useGetUserProfileQuery({id});
   const [updateUserProfile] = useUpdateUserProfileMutation();
+  const [addFavoriteMovie] = useAddFavoriteMovieMutation();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -107,6 +110,11 @@ const RatingsAndActions: React.FC<RatingsAndActionsProps> = ({
     }
   };
 
+  const handlesetFav = () => {
+    console.log('id' + id + ' idmovie:' + movieId);
+    addFavoriteMovie({id: id, idMovie: movieId});
+  };
+
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -129,7 +137,7 @@ const RatingsAndActions: React.FC<RatingsAndActionsProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handlesetFav}>
         <Icon name="heart" size={24} color="white" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={openRatingModal}>

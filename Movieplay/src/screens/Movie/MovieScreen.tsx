@@ -1,5 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Button, TouchableOpacity, useWindowDimensions } from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Button,
+  TouchableOpacity,
+  useWindowDimensions,
+} from 'react-native';
 import YouTube from 'react-native-youtube-iframe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {jwtDecode} from 'jwt-decode';
@@ -8,9 +17,9 @@ import RatingsAndActions from './Components/RatingsAndActions';
 import Synopsis from './Components/Synopsis';
 import TechnicalInfo from './Components/TechnicalInfo';
 import BackgroundImageWrapper from '../../components/backgroundWrapper/BackgroundWrapper';
-import { useTranslation } from 'react-i18next';
-import { StackScreenProps } from '@react-navigation/stack';
-import { HomeStackNavigationParams } from '../../navigation/HomeStackNavigator';
+import {useTranslation} from 'react-i18next';
+import {StackScreenProps} from '@react-navigation/stack';
+import {HomeStackNavigationParams} from '../../navigation/HomeStackNavigator';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../store/store';
 
@@ -19,20 +28,19 @@ type Props = StackScreenProps<HomeStackNavigationParams, 'Movie'>;
 const getYouTubeVideoId = (url: string | undefined) => {
   if (!url) return null;
 
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?v=))([^#&?]*).*/;
+  const regExp =
+    /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?v=))([^#&?]*).*/;
   const match = url.match(regExp);
   return match && match[7].length === 11 ? match[7] : null;
 };
 
-const MovieScreen = ({ route }: Props) => {
-  const { movie } = route.params;
-  const { t } = useTranslation();
+const MovieScreen = ({route}: Props) => {
+  const {movie} = route.params;
+  const {t} = useTranslation();
   const [showTrailer, setShowTrailer] = useState(false);
-  const { width, height } = useWindowDimensions();
+  const {width, height} = useWindowDimensions();
   const orientation = width > height ? 'landscape' : 'portrait';
   const youtubeRef = useRef<any>(null); // Uso 'any' para evitar problemas de tipo con useRef
-
-
 
   const toggleTrailer = () => {
     setShowTrailer(!showTrailer);
@@ -44,14 +52,20 @@ const MovieScreen = ({ route }: Props) => {
     <BackgroundImageWrapper>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.movieCard}>
-
           <View style={styles.movieHeader}>
             {!showTrailer && (
-              <Image style={styles.moviePoster} source={{ uri: movie.images[0] }} />
+              <Image
+                style={styles.moviePoster}
+                source={{uri: movie.images[0]}}
+              />
             )}
           </View>
           {showTrailer && videoId && (
-            <View style={[styles.videoContainer, orientation === 'landscape' && styles.videoLandscape]}>
+            <View
+              style={[
+                styles.videoContainer,
+                orientation === 'landscape' && styles.videoLandscape,
+              ]}>
               <YouTube
                 ref={youtubeRef}
                 videoId={videoId}
@@ -59,7 +73,7 @@ const MovieScreen = ({ route }: Props) => {
                 play={true}
                 controls={true}
                 fullscreen={showTrailer}
-                onChangeFullscreen={(e: { isFullscreen: boolean }) => {
+                onChangeFullscreen={(e: {isFullscreen: boolean}) => {
                   if (!e.isFullscreen) {
                     setShowTrailer(false);
                   }
@@ -76,15 +90,12 @@ const MovieScreen = ({ route }: Props) => {
             <Text style={styles.title}>{movie.title}</Text>
             <GenreLabel genre={movie.genre.join(', ')} />
 
-
-              <RatingsAndActions
-                movieId={movie.id}
-                rating={movie.rating}
-                movieTitle={movie.title}
-                movieSynopsis={movie.synopsis}
-
-              />
-
+            <RatingsAndActions
+              movieId={movie.id}
+              rating={movie.rating}
+              movieTitle={movie.title}
+              movieSynopsis={movie.synopsis}
+            />
 
             <Image
               style={styles.imageBackground}

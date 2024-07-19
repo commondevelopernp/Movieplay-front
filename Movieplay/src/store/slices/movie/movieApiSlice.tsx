@@ -29,12 +29,19 @@ export const movieApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Movie'],
     }),
-    addFavoriteMovie: builder.mutation<void, {id: string}>({
+    getFavoriteMovie: builder.query<IMovie[], {id: Number}>({
       query: ({id}) => ({
         url: `/api/movies/favorites/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Favs'],
+    }),
+    addFavoriteMovie: builder.mutation<void, {id: Number; idMovie: Number}>({
+      query: ({id, idMovie}) => ({
+        url: `/api/users/${id}/${idMovie}`,
         method: 'POST',
       }),
-      invalidatesTags: ['Movie'],
+      invalidatesTags: ['Favs'],
     }),
     removeFavoriteMovie: builder.mutation<void, {id: string}>({
       query: ({id}) => ({
@@ -49,6 +56,7 @@ export const movieApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetMoviesQuery,
   useRateMovieMutation,
+  useGetFavoriteMovieQuery,
   useAddFavoriteMovieMutation,
   useRemoveFavoriteMovieMutation,
 } = movieApiSlice;

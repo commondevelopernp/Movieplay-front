@@ -22,7 +22,7 @@ import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {jwtDecode} from 'jwt-decode';
-import {useAddFavoriteMovieMutation} from '../../store/slices/movie/movieApiSlice';
+import {useGetFavoriteMovieQuery} from '../../store/slices/movie/movieApiSlice';
 import {useGetUserProfileQuery} from '../../store/slices/user/userApiSlice';
 
 type FavoritesNavigationProp = CompositeNavigationProp<
@@ -42,7 +42,7 @@ const Favorites = ({navigation}: Props) => {
   //const {data, error, isLoading} = useGetMoviesQuery({}); //Prepare queries to be used.
   const moviesFromState = useSelector((state: RootState) => state.movie.movies);
   const [id, setUserId] = useState(-1);
-  const {data} = useGetUserProfileQuery({id});
+  const {data: movies, error: movieError} = useGetFavoriteMovieQuery({id});
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -56,11 +56,6 @@ const Favorites = ({navigation}: Props) => {
     };
     fetchToken();
   }, []);
-
-  useEffect(() => {
-    if (data) {
-    }
-  }, [data]);
 
   return (
     <BackgroundImageWrapper>
@@ -85,7 +80,7 @@ const Favorites = ({navigation}: Props) => {
             </ScrollView>
           </View>
           <FlatList
-            data={data}
+            data={movies}
             renderItem={({item}) => (
               <TouchableOpacity onPress={() => handleMoviePress(item)}>
                 <MovieCard movie={item} />
